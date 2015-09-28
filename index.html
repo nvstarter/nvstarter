@@ -1,195 +1,207 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="zh">
+<head>
     <meta charset="utf-8">
     <title>Start For Network Virtualization</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Chen Zhang">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Le styles -->
-    <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-      .tag-1 {
-        font-size: 13pt;
-      }
-      .tag-2 {
-        font-size: 10pt;
-      }
-      .tag-2 {
-        font-size: 8pt;
-      }
-      .tag-4 {
-        font-size: 6pt;
-     }
-    </style>
-    <link href="/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
-        <link href="/theme/css/font-awesome.css" rel="stylesheet">
-
-    <link href="/theme/css/pygments.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="/theme/html5.js"></script>
     <![endif]-->
 
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="/theme/images/favicon.ico">
-    <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png">
+    <!-- Le styles -->
+    <link href="/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="/theme/local.css" rel="stylesheet">
+    <link href="/theme/pygments.css" rel="stylesheet">
 
-    <link href="/" type="application/atom+xml" rel="alternate" title="Start For Network Virtualization ATOM Feed" />
+    <!-- So Firefox can bookmark->"abo this site" -->
 
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/index.html">Start For Network Virtualization </a>
-          <div class="nav-collapse">
-            <ul class="nav">
-                          <li class="divider-vertical"></li>
-                  <li >
-                    <a href="/category/network-virtualizationsdndata-center.html">
-						<i class="icon-folder-open icon-large"></i>network virtualization,sdn,data center
-					</a>
-                  </li>
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
 
-                          <ul class="nav pull-right">
-                                <li><a href="/archives.html"><i class="icon-th-list"></i>Archives</a></li>
-                          </ul>
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
 
-            </ul>
-            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
-          </div><!--/.nav-collapse -->
+        <a class="brand" href="">Start For Network Virtualization</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+        </ul>
         </div>
-      </div>
+        
     </div>
+    </div>
+</div>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="span9" id="content">
-        <div class="article">
-                <h1><a href="/wang-luo-xu-ni-hua-de-gai-nian-yu-mo-xing.html">网络虚拟化的概念与模型</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2015-09-28T00:00:00+08:00">
-        <i class="icon-calendar"></i>一 28 九月 2015
-</abbr>
-<span class="label">By</span>
-<a href="/author/chen-zhang.html"><i class="icon-user"></i>Chen Zhang</a>
-<span class="label">Category</span>
-<a href="/category/network-virtualizationsdndata-center.html"><i class="icon-folder-open"></i>network virtualization,sdn,data center</a>.
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+        
+
+        
 
 
-</footer><!-- /.post-info --></div>
-                <div class="summary"><h1>原创博客专栏——网络虚拟化的前世、今生与未来</h1>
-<h2>网络虚拟化的概念与模型</h2>
-<p>网络虚拟化由来已久，普遍认为最初的网络虚拟化起源于VLAN。我们知道以太网是通过广播进行自学习的，这在相对复杂的环境中会出现一些问题，比如公司的财务部门的数据经过广播可能会传播到外来&gt;人员接入的主机上，显然这是不能被接受的，VLAN的出现主要就是为了解决这一问题。VLAN（802.1Q）是一个局域网中的虚拟化技术，通过将一个局域网的广播域隔离为多个广播域，实现一个站点内不同&gt;的部门间的隔离。随着互联网的普及，又衍生出了多个站点间跨越Internet进行通信的需求，比如公司总部在北京，另外在上海有一个分部，每天分部的财务部门的数据都需要同步到总部去，显然这些数&gt;据是不允许暴露在公网上的。于是五花八门的VPN类技术出现了，极大地推动了网络虚拟化的发展。</p>
-<p>确切的说，网络虚拟化不是一类技术，而是一种用户使用网络的需求——用户总是希望能在内部进行任意的通信，而不希望被其他人所知。而随着需求的改变，技术本身是在不断地进化和迭代的。有了VLAN做隔离后，人们还希望能在一个二层内进行隔离，因此就出现了PVLAN；有了VPWS实现两个站点间的点对点互联，人们还希望通过点对多点进行多个站点间的互联，于是就出现了VPLS。诸如此类，不胜枚举
-。</p>
-<p>网络虚拟化也分为“一虚多”和“多虚一”两种基本模型。“一虚多”模型就是将一个物理 ...</p>
-                        <a class="btn primary xsmall" href="/wang-luo-xu-ni-hua-de-gai-nian-yu-mo-xing.html">more ...</a>
-                </div>
+    <div class='article'>
+        <div class="content-title">
+            <a href="/wang-luo-xu-ni-hua-de-gai-nian-yu-mo-xing.html"><h1>网络虚拟化的概念与模型</h1></a>
+一 28 九月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ 
         </div>
+        
+        <div><h1>原创博客专栏——网络虚拟化的前世、今生与未来</h1>
+<p><br></p>
+<h2>网络虚拟化的概念与模型</h2>
+<p><br></p>
+<p>网络虚拟化由来已久，普遍认为最初的网络虚拟化起源于VLAN。我们知道以太网是通过广播进行自学习的，这在相对复杂的环境中会出现一些问题，比如公司的财务部门的数据经过广播可能会传播到外来人员接入的主机上，显然这是不能被接受的，VLAN的出现主要就是为了解决这一问题。VLAN（802.1Q）是一个局域网中的虚拟化技术，通过将一个局域网的广播域隔离为多个广播域，实现一个站点内不同的部门间的隔离。随着互联网的普及，又衍生出了多个站点间跨越Internet进行通信的需求，比如公司总部在北京，另外在上海有一个分部，每天分部的财务部门的数据都需要同步到总部去，显然这些数据是不允许暴露在公网上的。于是五花八门的VPN类技术出现了，极大地推动了网络虚拟化的发展。</p>
+<p>确切的说，网络虚拟化不是一类技术，而是一种用户使用网络的需求——用户总是希望能在内部进行任意的通信，而不希望被其他人所知。而随着需求的改变，技术本身是在不断地进化和迭代的。有了VLAN做隔离后，人们还希望能在一个二层内进行隔离，因此就出现了PVLAN；有了VPWS实现两个站点间的点对点互联，人们还希望通过点对多点进行多个站点间的互联，于是就出现了VPLS。诸如此类，不胜枚举。</p>
+<p>网络虚拟化也分为“一虚多”和“多虚一”两种基本模型。“一虚多”模型就是将一个物理/逻辑网络元素分解成多个逻辑网络元素，这里的网络元素可以是设备级别的，也可以指链路、拓扑等等。网络离不开控制和数据转发，控制负责软件的逻辑，数据转发依赖于硬件的性能，软件来驱动硬件的工作，于是两种模型根据虚拟化对象的不同又可细分为“控制平面一虚多”、“控制平面多虚一”、“数据平面一虚多”和“数据平面多虚一”。依照上述，下面的表格给出作者所知的网络虚拟化技术（好像避免不了要用到这个词）的分类，这里将以VxLAN代表的隧道技术分类为数据平面多虚一，考虑的是它解决了VLAN数量不够&gt;用的限制，将TRILL/SPB分类为数据平面多虚一考虑的是它实现了二层网络中的智能传输。不过这两类技术也在相互渗透，具体的我们后面再介绍。</p>
+<table class="table-bordered table-striped table-condensed">
+   <tr>
+      <td>控制平面一虚多</td>
+      <td>Cisco VDC/Huawei VS/Juniper Logical System</td>
+   </tr>
+   <tr>
+      <td>控制平面多虚一</td>
+      <td>Cisco VSS/Huawei CSS/H3C IRF、Cisco vPC/Arista M-LAG、Cisco Fex/Huawei SVF</td>
+   </tr>
+   <tr>
+      <td>数据平面一虚多</td>
+      <td>VxLAN/NVGRE/STT/Geneve、SR-IOV、VN-LINK/M-TAG VEPA、FCOE</td>
+   </tr>
+   <tr>
+      <td>数据平面多虚一</td>
+      <td>RILL/SPB、Cisco OTV/Huawei EVN/H3C EVI、LISP</td>
+   <tr>
+</table>
+
+<p>作者对网络虚拟化模型的另外一种理解，是从网络元素的角度来考虑的。网络，无非就是节点和链路，多个节点和多条链路组成了各种各样的拓扑。所以网络的虚拟化，整体上可以看做是拓扑的虚拟化，&gt;细节上可以看做是节点的虚拟化、链路的虚拟化。只是按照这种模型，对技术分类起来是很困难的，不过这并不妨碍它作为一种对网络虚拟化很好的理解方式。关于这种模型，到了讲SDN中的网络虚拟化时再来详细地分析。</p></div>
         <hr />
-        <div class="article">
-                <h1><a href="/xie-zai-qian-mian.html">写在前面</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2015-09-28T00:00:00+08:00">
-        <i class="icon-calendar"></i>一 28 九月 2015
-</abbr>
-<span class="label">By</span>
-<a href="/author/chen-zhang.html"><i class="icon-user"></i>Chen Zhang</a>
-<span class="label">Category</span>
-<a href="/category/network-virtualizationsdndata-center.html"><i class="icon-folder-open"></i>network virtualization,sdn,data center</a>.
+    </div>
+		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/xie-zai-qian-mian.html"><h2>写在前面</h2></a>
+        <div class= "well small"> 一 28 九月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
 
 
-</footer><!-- /.post-info --></div>
-                <div class="summary"><h1>原创博客专栏——网络虚拟化的前世、今生与未来</h1>
+ </div>
+        <div class="summary"><h1>原创博客专栏——网络虚拟化的前世、今生与未来</h1>
 <h2>写在前面</h2>
 <p>从今天开始做一个网络虚拟化的专栏。网络技术，永远是服务于实际需求的。近几年来，网络的架构正在发生着深刻的变化，尤其是在云计算的IT模型中，要求云中的网络资源能够像CPU/内存和磁盘一样，得到足够的抽象和灵活的调度，这用术语来描述就是虚拟化的能力。经过多年技术的发展和市场的检验，计算和存储的虚拟化已经就位，而网络的虚拟化则成为了三缺一里面的那个一，尽管传统网络里面也有VLAN、VPN等虚拟化技术，但是它们远远不能满足云的需求。</p>
-<p>SDN和NFV在这几年火爆的很。从最开始学术界的牵头喊口号，到现在工业界积极的布局圈地，SDN和NFV正在进行着软着陆，并没有出现“跳得高，摔得惨”的悲剧。软件定义一切的大潮已成不可逆转之势，而软件提供的灵活性和自动化为网络的革新提供了技术上的便利条。因此SDN和NFV成为了网络界的新宠，网络虚拟化也将被重新定义。
-<br>
-如果把APP和Web看作是互联网的前端，那么形形色色的网络盒子就是互联网的后台，相比于前端市场的非理性繁荣，后台的市场则一直不温不火，因为这个市场的创业门槛过高，研发的周期过长，并不具备移动互联网快速试错、快速迭代的特点。SDN的提出则极大地降低了这个门槛，甚至可以说是解放了被压抑了多年的网络从业者。可以看到近几年来网络领域出现了不少创业公司，不过遗憾的是其中鲜有大红大紫者，因此在这波SDN的浪潮中，找到方向感还是很重要的。</p>
-<p>从客观上来讲，是云计算的发展将网络虚拟化推到了技术的前沿。不过，网络虚拟化却不只是云的独家需求 ...</p>
-                        <a class="btn primary xsmall" href="/xie-zai-qian-mian.html">more ...</a>
-                </div>
+<p>SDN和NFV在这几年火爆的很。从最开始学术界的牵头喊口号，到现在工业界积极的布局圈地，SDN和NFV正在进行着软着陆，并没有出现“跳得高，摔得惨”的悲剧。软件定义一切的大潮已成不可逆转之势，而软件提供的灵活性和自动化为网络的革新提供了技术上的便利条件。因此SDN和NFV成为了网络界的新宠，网络虚拟化也将被重新定义。</p>
+<p>如果把APP和Web看作是互联网的前端，那么形形色色的网络盒子就是互联网的后台，相比于前端市场的非理性繁荣，后台的市场则一直不温不火，因为这个市场的创业门槛过高，研发的周期过长，并不具备移动互联网快速试错、快速迭代的特点。SDN的提出则极大地降低了这个门槛，甚至可以说是解放了被压抑了多年的网络从业者。可以看到近几年来网络领域出现了不少创业公司，不过遗憾的是其中鲜有大红大紫者，因此在这波SDN的浪潮中，找到方向感还是很重要的。</p>
+<p>从客观上来讲，是云计算的发展将网络虚拟化推到了技术的前沿。不过，网络虚拟化却不只是云的独家需求 ...</p> <a class="btn btn-info xsmall" href="/xie-zai-qian-mian.html">read more</a></div>
+    </div>	
+				
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="/index.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+ 
+  
         </div>
-        <hr />
+        
+        <div class="span3">
 
-        </div><!--/span-->
-
-                <div class="span3 well sidebar-nav" id="sidebar">
-<ul class="nav nav-list">
-<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://getpelican.com/"><i class="icon-external-link"></i>Pelican</a></li>
-    <li><a href="http://python.org/"><i class="icon-external-link"></i>Python.org</a></li>
-    <li><a href="http://jinja.pocoo.org/"><i class="icon-external-link"></i>Jinja2</a></li>
-    <li><a href="#"><i class="icon-external-link"></i>You can modify those links in your config file</a></li>
-<li class="nav-header"><h4><i class="icon-home icon-large"></i> social</h4></li>
-<li><a href="/" rel="alternate"><i class="icon-bookmark icon-large"></i>atom feed</a></li>
-    <li><a href="#"><i class="icon-You can add links in your config file-sign icon-large"></i>You can add links in your config file</a></li>
-    <li><a href="#"><i class="icon-Another social link-sign icon-large"></i>Another social link</a></li>
-
-<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
-<li>
-<a href="/category/network-virtualizationsdndata-center.html">
-    <i class="icon-folder-open icon-large"></i>network virtualization,sdn,data center
-</a>
-</li>
-
-<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="/archives.html">Archives</a>
+                <li><a href="/tags.html">Tags</a>
 
 
-</ul>        </div><!--/.well -->
-
-      </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <address id="about">
-                Proudly powered by <a href="http://pelican.notmyidea.org/">Pelican <i class="icon-external-link"></i></a>,
-                                which takes great advantage of <a href="http://python.org">Python <i class="icon-external-link"></i></a>.
-        </address><!-- /#about -->
-
-        <p>The theme is from <a href="http://twitter.github.com/bootstrap/">Bootstrap from Twitter <i class="icon-external-link"></i></a>,
-                   and <a href="http://fortawesome.github.com/Font-Awesome/">Font-Awesome <i class="icon-external-link"></i></a>, thanks!</p>
-      </footer>
-
-    </div><!--/.fluid-container-->
 
 
-<script type="text/javascript">
-    var disqus_shortname = 'nvstarter';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
+            </ul>
+            </div>
 
-    <!-- Le javascript -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/theme/js/jquery-1.7.2.min.js"></script>
-    <script src="/theme/js/bootstrap.min.js"></script>
-  </body>
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="/category/network-virtualizationsdndata-center.html">network virtualization,sdn,data center</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://getpelican.com/">Pelican</a></li>
+                <li><a href="http://python.org/">Python.org</a></li>
+                <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                <li><a href="#">You can modify those links in your config file</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="#">You can add links in your config file</a></li>
+                <li><a href="#">Another social link</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/theme/bootstrap-collapse.js"></script>
+ 
+</body>
 </html>
