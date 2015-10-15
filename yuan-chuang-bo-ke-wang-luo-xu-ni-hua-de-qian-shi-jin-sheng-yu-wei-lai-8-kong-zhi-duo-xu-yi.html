@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Start For Network Virtualization</title>
+    <meta name="description" content="">
+    <meta name="author" content="Chen Zhang">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="/theme/local.css" rel="stylesheet">
+    <link href="/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="">Start For Network Virtualization</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>原创博客——网络虚拟化的前世、今生与未来(8-控制多虚一)</h1>
+一 05 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+        </div>
+	
+        <div><h2>控制平面多虚一</h2>
+<p>控制平面多虚一，指的是将两台或者多台设备的资源（包括操作系统、转发实例、转发表、端口等）进行整合，对外表现为一台逻辑设备，以Cisco VSS，Huawei CSS和H3C的IRF为代表，后来Cisco又推出了vPC技术作为对VSS的升级（虽然vPC已经很难说是控制平面多虚一技术了）。其实在这些技术中，除了转发实例、转发表这些转发逻辑层面的资源以外，端口这些数据平面的资源都被连带着整合了，因此又称“虚拟机框”技术。为了方便起见，以下就称为“虚拟机框”技术了。这类技术和堆叠技术，感觉应该本质上是一回事，不过堆叠设备必须要落在一起，要通过专门的堆叠口、堆叠线进行连接，而“虚拟机框”设备间则可以通过线卡上的端口进行以太网的连接，距离能拉的很远。</p>
+<p>几台设备搞成一台，好处是很多的。第一，简化了运维，以前几台设备各配各的配置，复杂不说还容易出错，堆叠后管理员配一次就都OK了。第二，高可用性，每台设备里面都有引擎，一台坏了能够自动倒换，也就省去了HSRP这些麻烦事。第三点，也是最重要的是，“虚拟机框”技术在提供端口冗余的同时，能够避开STP，除了网管心头的一个大害。这类技术典型的组网场景如下图右侧所示：</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E6%8E%A7%E5%88%B6%E5%A4%9A%E8%99%9A%E4%B8%80%20%E7%A4%BA%E6%84%8F.png" /></p>
+<h3>1) VSS</h3>
+<p>VSS是Cisco Catalyst 6500系列交换机推出的虚拟机框技术，支持对两台6500设备以主备模式进行整合。其中主用交换机中的引擎负责这个逻辑设备的转发决策，形成转发表，而备用交换机不断地同步相关信息，不进行学习和计算。而主备用设备的线卡都是分布式的，同时进行数据的转发。VSS主要有以下技术点：</p>
+<ul>
+<li>控制信令VSL（Virtual Switch Link）。VSS技术通过VSL将两个机架绑定成为一个虚拟的交换系统，它依赖于控制信令VSLP的交互，以完成主备的协商以及状态的同步。同时VSL也能在主备交换机间传输普通数据流量，这时它其实就相当于虚拟设备的背板走线。当然了，为实现虚拟设备的线速转发，VSL链路应该具备足够的带宽。</li>
+<li>高可靠技术NSF/SSO。SSO (Stateful Switchover)技术是保证了主备引擎、线卡能够以最短的时间进行切换。但是即使中断时间很短，数据转发也可能出现中断，路由可能需要重新收敛。NSF（NonStop Forwarding）则解决了这一问题，实现了路由的平稳重启。</li>
+<li>跨设备链路聚合MEC（Multichassis EtherChannel）。MEC是一种二层的多路径技术，它将相连节点分别与VSS主备两台交换机间相连的两个端口聚合为Port Group，统一为一个转发端口，从而允许在不采用生成树协议的条件下，构建无环路的二层转发拓扑。在VSS拓扑结构中使用MEC，所有链路都是激活的，在提供高度可用的拓扑结构的同时，也提高了链路的利用率。</li>
+<li>双活监测机制。当VSL故障后，两台物理设备都将成为主用交换机，对上下游设备造成IP网关混乱。为了防止双活问题的发生，VSS采用以下机制进行监控：如果有跨设备链路聚合时，使用PAgP来互相检测通知；如果有富裕接口在虚拟化的两台物理设备间可以单独再拉根直连线路，通过VSLP Fast Hello专门用做监控；另外VSS还可以使用IP BFD通过互联的三层链路进行监控。监测到双活后，立刻禁用原备用交换机的端口，直到VSL链路恢复。</li>
+</ul>
+<p>虽然VSS只允许两台物理设备的虚拟化，不过通过虚拟设备间的互联仍可进一步简化核心网的拓扑。如下图所示，图中汇聚层和核心层均使用了VSS技术，保证高可用性的同时形成了一个天然无环的拓扑结构。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vss.png" /></p>
+<h3>2) CSS/IRF</h3>
+<p>CSS、IRF 2分别是华为、华三私有的“虚拟机框”技术。CSS的前身是iStack，iStack通过堆叠方式支持盒式设备的多虚一，而CSS支持对框式设备的多虚一。IRF 2的前身是IRF 1，IRF 1通过堆叠方式支持盒式设备的多虚一，而IRF 2同时支持盒式设备/框式设备的多虚一。CSS/IRF 2和VSS的基本原理和组网架构如出一辙，也就是换换名称而已，对比如下。</p>
+<table>
+<thead>
+<tr>
+<th>技术</th>
+<th>控制信令</th>
+<th>可靠性</th>
+<th>链路聚合</th>
+<th>双活监测</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cisco VSS</td>
+<td>VSLP</td>
+<td>NSF/SSO</td>
+<td>MEC</td>
+<td>PAgP/VSLP/Fast Hello/IP BFD</td>
+<td></td>
+</tr>
+<tr>
+<td>Huawei CSS</td>
+<td>堆叠竞争报文</td>
+<td>支持倒换，可能不支持NSF</td>
+<td>Eth-Trunk</td>
+<td>私有DAD协议</td>
+<td></td>
+</tr>
+<tr>
+<td>H3C IRF</td>
+<td>IRF Link</td>
+<td>支持倒换，可能支持NSF</td>
+<td>支持，没找到技术名称</td>
+<td>LACP/免费ARP/BFD</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>另外，相比于VSS只支持两台设备的虚拟化，CSS和IRF 2都支持1：N的主备用模式，能够提供更高的可靠性。从目前能够找到的资料来看，CSS和IRF 2最多都能支持4台框式交换机，或者9台盒式交换机的虚拟化。其实，Cisco最开始设计VSS时，也准备支持1：N模式，但是后来由于Cisco的控制平面多虚一的技术路线演化为了vPC，因此也就不了了之了。</p>
+<h3>3) vPC</h3>
+<p>Cisco在Nexus系列交换机中摒弃掉VSS，推出了 vPC（ virtual Port-Channel）特性。前面说过VSS/IRF是整机级别的虚拟化， 而vPC则是接口级的虚拟化，其实就是实现了VSS中的跨设备链路聚合。因此在vPC中只需要对成员接口进行链路聚合相关的信息同步即可，不需要对整机进行状态同步。下图中其中vPC对应MEC，Peer-Link对应VSL，CFS Protocol对应VSLP ，Peer-Keepalive Link对应VSLP Fast Hello。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vPC.png" /></p>
+<p>下面通过一个二层转发的实例来介绍vPC的工作原理，其中左图为ARP请求的泛洪过程，右图为ARP应答，假设SW1 port 11，SW2 port 21属于vPC 1，SW1 port12，SW2 port 22属于vPC 1。SW1通过port 11上收到ARP请求，之后在vpc link和port 12上进行泛洪。SW 2收到该ARP请求后，判定port 21与port 22与SW 1中的一些端口进行了vPC绑定，因此不会从这两个端口进行转发。同时SW 1通过CFS消息告诉SW 2 MAC_A接在vPC 1上。当SW 2通过port 22收到ARP应答后，查找MAC地址表，得知目的地址为MAC_A的帧应该向vPC 1的成员端口转发，于是通过port 21转发给SW 3，同时通过CFS告知SW 1 MAC_B接在vPC 2上。之后的通信得以按照学习到的信息进行转发。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vpc%E8%BD%AC%E5%8F%91.png" /></p>
+<p>对外来看，实现vPC的设备还是两台设备（就目前找到的资料来看，vPC也只支持2台设备的虚拟化），管理上还是要分开配置，两台设备的转发实例、转发表等都是独立的，STP、HSRP这些协议也还需要启用（vPC针对HSRP有一些改进）。可以说，vPC网络是单数据平面，双控制平面的。当然了，这也意味着vPC设备的引擎是双活的，就这一点来说vPC比VSS要好一些。不过，从复杂度来讲vPC没有VSS这类技术好。vPC与VSS简单对比如下。</p>
+<p>跨设备链路聚合，除了Cisco的vPC一台，Arista也有个类似的技术MLAG，其核心原理和vPC如出一辙，这里就不再赘述了。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vss-vpc%E5%AF%B9%E6%AF%94.png" /></p>
+<p>控制平面多虚一技术发展了很多年，其技术已经较为成熟稳定，在数据中心中得到了广泛的部署。从最初的堆叠到“虚拟机框”，在一定程度上解除了地理位置的限制，但是走分布式协议来进行整机状态的同步，终究还是会对部署规模有一定的制约。虽然CSS/IRF 2都支持4台框式交换机的虚拟化，但估计也很难再往上提高了。另外，扩大部署规模还可以通过虚拟设备间的互联，不过本节提到的技术都是私有的，各家设备不能混合组网，属于技术以外隐形的约束。而近年来，隧道的数据平面虚拟化技术的发展，则为数据中心提供了几乎无限的可扩展性，“虚拟机框”的技术面临着极大的挑战。</p></div>
+	
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nvstarter'; 
+    var disqus_title = '原创博客——网络虚拟化的前世、今生与未来(8-控制多虚一)';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="/archives.html">Archives</a>
+                <li><a href="/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="/category/misc.html">misc</a></li>
+                <li><a href="/category/network-virtualizationsdndata-center.html">network virtualization,sdn,data center</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://getpelican.com/">Pelican</a></li>
+                <li><a href="http://python.org/">Python.org</a></li>
+                <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                <li><a href="#">You can modify those links in your config file</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="#">You can add links in your config file</a></li>
+                <li><a href="#">Another social link</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

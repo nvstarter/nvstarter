@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Start For Network Virtualization</title>
+    <meta name="description" content="">
+    <meta name="author" content="Chen Zhang">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="/theme/local.css" rel="stylesheet">
+    <link href="/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="">Start For Network Virtualization</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>原创博客——网络虚拟化的前世、今生与未来(5-VPN)</h1>
+五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-5-vpn.html" class="btn btn-info xsmall">zh</a>
+            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-5-vpn.html" class="btn btn-info xsmall">zh</a>&nbsp;
+            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-5-vpn.html" class="btn btn-info xsmall">zh</a>&nbsp;
+            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-5-vpn.html" class="btn btn-info xsmall">zh</a>&nbsp;
+ 
+
+
+        </div>
+	
+        <div><h2>VPN--概述</h2>
+<p>书接上文，说完了VLAN，该VPN隆重登场了。相比于VLAN这种简单的局域网技术，VPN可是要复杂的多。VPN并不是一种协议或者标准，而是一类技术的统称，或者更准确地说，是用户跨越广域网进行私有网络互联这样一种业务形态。</p>
+<p>早期租用DDN专线或者通过ISDN拨号来实现私有网络互联是可行的，缺点是站点间的带宽是固定的，所用电路资源是独占的，不够灵活而且费用昂贵。之后，出现了ATM/FR/IP这类基于分组的广域网技术，克服了由资源独占引发的问题，VPN的概念也不过由于ATM/FR因为种种原因最后败给了IP，因此现在的VPN技术基本上都是基于IP的VPN了（MPLS也算是IP的一个变种）。当然，有实力的话可以自建光纤进行互联，不过可能也只有像Google这种级别的公司才玩得转。这个小节我们主要来讲一讲基于IP的VPN，如不特殊说明，以下简称IP VPN为VPN。</p>
+<p>这段历史告诉我们，VPN并不是网络大牛们一时兴起，心血来潮搞的技术花花肠子，而是因为这是实打实的需求，是巨大的市场，是兵家必争的利益至高点。这十几年来，VPN为运营商带来了不可估量的效益，几乎靠一己之力支撑着运营商的Internet对公业务。如果说VLAN是网络虚拟化的鼻祖，那么VPN则真正把网络虚拟化作为一个领域推广开来了。</p>
+<p>之所以说VPN是网络虚拟化的技术，从业务形态上来看就一清二楚了，过多的解释反而会显得多余，这里作者就不再画蛇添足了。</p>
+<p>VPN的技术可谓五花八门，从这个大类技术的层面上来说，谈不到什么具体的帧格式或者包头，倒是以前面提到的“封装—寻址”通用技术模型来分析VPN技术非常的贴切，因为想要跨越公网进行私网的组网，只能通过封装后再寻址的方法。图中，CE是客户网络的边缘设备，PE是运营商网络的边缘设备，P是核心网中的转发设备。Payload可能是二层的帧也可能使三层的数据包，这取决于客户的目标数据业务。Tag就比较灵活了，QinQ中是S-Tag，PBB中是B-MAC + B-VLAN，MPLS VPN中是MPLS Label，IP GRE中是PE的公网IP地址。从这张图抽象出来VPN的实现非常好理解，客户通过CE把Payload送出来，PE根据特定的逻辑确定对端PE的Tag，进行封装后传给P网络，P网络根据Tag寻址到对端PE，该PE解封装后将Payload原封不动地转发给相关的CE。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vpn%20model.png" /></p>
+<p>在上述VPN技术模型中，又可以分为基于标签和基于隧道的技术。通常来说，基于标签的技术中，标签只负责打标记而不负责转发，如QinQ。而基于隧道的技术中，转发需要依赖于PE封装的数据帧头/数据包头，如MPLS类VPN、GRE等等。其中MPLS类技术较为特殊，是带有标签技术外在特征的隧道技术，而GRE这类需要PE封装完整的外层包头的技术，一般称为Overlay隧道。</p>
+<p>讲完了技术模型，概括地讲讲一些具有代表性的VPN技术。之所以说概括性，是因为作者对一些技术里面的细节确实也不是很清楚，VPN的技术种类实在是太繁杂了，光是给VPN类技术的分类方法就能说出七八种来，而每种VPN技术的细节都能够讲上个几十页的。这里，我们将按照应用形式来对常见的VPN技术进行梳理和对比，分为站点对站点VPN以及远程接入VPN。</p></div>
+	
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nvstarter'; 
+    var disqus_title = '原创博客——网络虚拟化的前世、今生与未来(5-VPN)';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="/archives.html">Archives</a>
+                <li><a href="/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="/category/misc.html">misc</a></li>
+                <li><a href="/category/network-virtualizationsdndata-center.html">network virtualization,sdn,data center</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://getpelican.com/">Pelican</a></li>
+                <li><a href="http://python.org/">Python.org</a></li>
+                <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                <li><a href="#">You can modify those links in your config file</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="#">You can add links in your config file</a></li>
+                <li><a href="#">Another social link</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

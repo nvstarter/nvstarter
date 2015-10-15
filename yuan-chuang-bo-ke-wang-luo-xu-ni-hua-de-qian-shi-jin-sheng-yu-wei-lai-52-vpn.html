@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Start For Network Virtualization</title>
+    <meta name="description" content="">
+    <meta name="author" content="Chen Zhang">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="/theme/local.css" rel="stylesheet">
+    <link href="/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="">Start For Network Virtualization</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>原创博客-网络虚拟化的前世、今生与未来(5.2-VPN)</h1>
+五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+        </div>
+	
+        <div><h2>站点对站点VPN</h2>
+<p>按照业务场景细分，站点对站点VPN还可以再具体分为内联网（Intranet） VPN和外联网（Extranet）VPN。两者的区别主要在前者联的是同一家公司的总部与分支，后者是指公司与外部利益相关群体。不过两者的区别主要是在与一些访问策略和地址规划上的不同，从网络虚拟化的角度来说区别并不大。故此这里的讲解将对两者等同看待，首先简单地介绍一下接下来会涉及到的VPN技术。</p>
+<p>QinQ（802.1ad，PB，Provider Bridge），VLAN堆栈技术。通过将公网VLAN 标签（S-Tag）封装在用户私网VLAN 标签（C-Tag）前，使报文带着两层VLAN Tag穿越公网。PE负责增加/剥除4个字节的S-Tag，P要求支持802.1q中的Trunk概念，根据用户的MAC地址和S-VLAN在公网进行2层自学习转发。</p>
+<p>PBB（802.1ah，Provider Backbone Bridge），运营商骨干网桥接技术，属于一种MACinMAC的隧道技术，可配合QinQ使用。通过定义双层MAC地址的帧结构，PE将B-MAC和B-Tag封装在CE数据帧前，以P要求支持Trunk概念，根据B-MAC和B-VLAN在公网进行2层自学习转发。</p>
+<p>配一张VLAN，QinQ和PBB的格式图吧，一目了然。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vpn%20qinq%20spb.png" /></p>
+<p>GRE（RFC 2784），通用路由封装技术，是最早的Overlay隧道技术。PE封装外层网络层协议包头，P为外层网络层协议路由器，根据外层网络目的地址进行转发。</p>
+<p>IPSec（RFC 4031）VPN，支持加密的VPN技术。IPsec VPN工作在IPsec隧道模式，PE封装外层IP包头，P可为任意IP路由器，根据外层公网目的IP进行转发。</p>
+<p>BGP/MPLS IP VPN（RFC 2547），使用BGP协议在公网上发布VPN路由，使用MPLS在公网上转发VPN报文。PE负责BGP交互，封装MPLS头，P为支持MPLS的路由器，根据MPLS Label进行转发。</p>
+<p>VPWS和VPLS，都属于MPLS VPN（RFC 4664）。VPWS由有Martini VPWS和Kompella VPWS两种实现方式，VPWS由有VPLS-LDP和VPLS-BGP两种实现方式。IPLS，是一种特殊的VPLS，只支持对IP分组的传输，CE为主机或者路由器。</p>
+<p>这么多技术，看起来都眼花，技术细节作者确实讲不动了。下面直接从网络虚拟化的设计原则出发来对这些技术进行对比。</p>
+<h3>连通性</h3>
+<p>包括两个方面，一是技技术所支持的数据业务类型，二是所支持的流量类型。多说无益，直接上表格。</p>
+<table>
+<thead>
+<tr>
+<th>VPN技术</th>
+<th>数据业务</th>
+<th>流量类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QinQ</td>
+<td>二层数据帧</td>
+<td>点对点/点对多点</td>
+</tr>
+<tr>
+<td>PBB</td>
+<td>二层数据帧</td>
+<td>点对点/点对多点</td>
+</tr>
+<tr>
+<td>GRE</td>
+<td>三层数据包</td>
+<td>点对点，支持伪广播</td>
+</tr>
+<tr>
+<td>IPsec VPN</td>
+<td>三层数据包</td>
+<td>点对点</td>
+</tr>
+<tr>
+<td>BGP/MPLS IP VPN</td>
+<td>三层数据包</td>
+<td>点对点</td>
+</tr>
+<tr>
+<td>VPWS</td>
+<td>二层数据帧</td>
+<td>点对点，伪广播（有待确认）</td>
+</tr>
+<tr>
+<td>VPLS</td>
+<td>二层数据帧</td>
+<td>点对点，支持伪广播</td>
+</tr>
+<tr>
+<td>IPLS</td>
+<td>二层数据帧，但是网络层只支持IP分组</td>
+<td>点对点，支持伪广播</td>
+</tr>
+</tbody>
+</table>
+<h3>安全性</h3>
+<p>从控制平面和转发平面的安全性考虑。</p>
+<table>
+<thead>
+<tr>
+<th>VPN技术</th>
+<th>控制平面</th>
+<th>数据平面</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QinQ</td>
+<td>无控制平面</td>
+<td>依赖于公网配置</td>
+</tr>
+<tr>
+<td>PBB</td>
+<td>无控制平面</td>
+<td>依赖于公网配置</td>
+</tr>
+<tr>
+<td>GRE</td>
+<td>无控制平面</td>
+<td>不依赖于公网配置，提供Key值进行认证，但不提供加密</td>
+</tr>
+<tr>
+<td>IPsec VPN</td>
+<td>无控制平面</td>
+<td>不依赖于公网配置，提供认证和加密</td>
+</tr>
+<tr>
+<td>BGP/MPLS IP VPN</td>
+<td>路由发布认证，VRF关联，路由RT等机制</td>
+<td>依赖于公网配置</td>
+</tr>
+<tr>
+<td>VPWS</td>
+<td>Martini方式无控制平面，Kompella方式同BGP/MPLS IP VPN</td>
+<td>依赖于公网配置</td>
+</tr>
+<tr>
+<td>VPLS</td>
+<td>VPLS-LDP方式无控制平面，VPLS-BGP方式同BGP/MPLS IP VPN</td>
+<td>依赖于公网配置</td>
+</tr>
+<tr>
+<td>IPLS</td>
+<td>无控制平面（有待确认）</td>
+<td>依赖于公网配置</td>
+</tr>
+</tbody>
+</table>
+<h3>服务质量</h3>
+<p>广域网传输是VPN技术转发速率的瓶颈，这里主要考虑上述VPN技术在广域网的传输保障机制。</p>
+<table>
+<thead>
+<tr>
+<th>VPN技术</th>
+<th>公网QoS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QinQ</td>
+<td>S-Tag中的PR</td>
+</tr>
+<tr>
+<td>PBB</td>
+<td>B-Tag中的PR</td>
+</tr>
+<tr>
+<td>GRE</td>
+<td>无</td>
+</tr>
+<tr>
+<td>IPsec VPN</td>
+<td>专用广域网加速设备</td>
+</tr>
+<tr>
+<td>BGP/MPLS IP VPN</td>
+<td>MPLS/RSVP TE</td>
+</tr>
+<tr>
+<td>VPWS</td>
+<td>MPLS/RSVP TE</td>
+</tr>
+<tr>
+<td>VPLS</td>
+<td>MPLS/RSVP TE</td>
+</tr>
+<tr>
+<td>IPLS</td>
+<td>MPLS/RSVP TE</td>
+</tr>
+</tbody>
+</table>
+<h3>可扩展性</h3>
+<p>VPN支持的虚网数理论上限取决于标识虚网的字段位数，实际上受限于PE、P设备上资源的共享和分配。</p>
+<table>
+<thead>
+<tr>
+<th>VPN技术</th>
+<th>虚网数量</th>
+<th>其他因素</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QinQ</td>
+<td>S-VLAN标签， 4K*4K</td>
+<td>CE为交换机时，P需要学习用户MAC地址，限制了用户规模</td>
+</tr>
+<tr>
+<td>PBB</td>
+<td>I-SID标签，16million</td>
+<td>P根据运营商MAC转发，不需要学习用户MAC地址，比QinQ用户规模大</td>
+</tr>
+<tr>
+<td>GRE</td>
+<td>一般为特定用户内部自用</td>
+<td>无明确因素</td>
+</tr>
+<tr>
+<td>IPsec VPN</td>
+<td>一般为特定用户内部自用</td>
+<td>无明确因素</td>
+</tr>
+<tr>
+<td>BGP/MPLS IP VPN</td>
+<td>理论上无上限</td>
+<td>PE数量，VPN接口数量，路由条目数量，LSP数量等等</td>
+</tr>
+<tr>
+<td>VPWS</td>
+<td>同上</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>VPLS</td>
+<td>同上</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>IPLS</td>
+<td>同上</td>
+<td>同上</td>
+</tr>
+</tbody>
+</table>
+<h3>运维自动化</h3>
+<p>有控制平面的VPN技术相对好一些，没有控制平面的VPN技术一般为纯静态配置，自动化较差。</p></div>
+	
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nvstarter'; 
+    var disqus_title = '原创博客-网络虚拟化的前世、今生与未来(5.2-VPN)';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="/archives.html">Archives</a>
+                <li><a href="/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="/category/misc.html">misc</a></li>
+                <li><a href="/category/network-virtualizationsdndata-center.html">network virtualization,sdn,data center</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://getpelican.com/">Pelican</a></li>
+                <li><a href="http://python.org/">Python.org</a></li>
+                <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                <li><a href="#">You can modify those links in your config file</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="#">You can add links in your config file</a></li>
+                <li><a href="#">Another social link</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

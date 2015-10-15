@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Start For Network Virtualization</title>
+    <meta name="description" content="">
+    <meta name="author" content="Chen Zhang">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="/theme/local.css" rel="stylesheet">
+    <link href="/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="">Start For Network Virtualization</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>网络虚拟化的前世、今生与未来</h1>
+二 29 九月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+        </div>
+	
+        <div><h2>数通网络中的虚拟化</h2>
+<p>现有的互联网按照传输设备的不同，可以简单地划分为Packet Domain、Optical Domain和Circuit Domain。Optical Domain和Circuit Domain一般是用来做传输的，而互联网上的路由寻址和一些附加值业务则主要是由Packet Domain设备来实现的。这个系列的专题主要是讲Packet Domain里的网络虚拟化。</p>
+<p>Optical Domain和Circuit Domain是面向连接的，通过物理层的波长、时隙等信道特征可以天然地隔离不同用户的数据业务，并为用户提供不同的服务质量。相比之下，Packet Domain一般需要通过特定的字段来区分用户与用户的数据业务。数通网络中的虚拟化，最精辟的莫过于“封装—寻址”这一通用技术模型，或者说专业一点就是“Routed-Routing” Protocol。这部分内容，网上有很多的资料，作者之前看过一个大牛写的一个数据中心网络的技术专栏，其中对这部分内容的概括非常精炼、理解十分深刻，所以这里直接引用相关内容。</p>
+<p>“
+Routed Protocol和Routing Protocol两个词很好的对技术组成部分进行了分类。这里的Route可以进行广义理解，不要只限于IP，作者倾向于将Routed解释成封装，Routing解释成寻址。任何一段数据信息从起点A发送到终点B的过程中，中间网络做的事情就是封装与寻址两件事。</p>
+<p>由于中间网络只做传输，是不需要了解数据（载荷）信息的，因此要封装一个可以识别的目的地址Tag，这个Tag可以理解为目的IP/目的MAC/MPLS标签等等，所有中间设备只要能识别这个Tag即可，这就是封装。</p>
+<p>再说寻址，网络设备能够识别目的Tag后，还需要知道对应的本地出接口在哪才能将报文转发出去。最傻瓜的处理方式有两种，一个是通过手工配置的方式将Tag静态对应到本地出接口上（如静态路由、静态MAC等），再有就是在所有接口广播了（Ethernet）。高级的方式则是使用一种寻址用的动态协议，自动的进行邻居发现、拓扑计算和Tag传递等动作，如使用RIP/OSPF/BGP/ISIS/LDP/PIM/MSDP等等。这里需要注意的是传统Ethernet是通过广播来寻址的，注定规模不能太大。STP的唯一作用就是防止环路，通过拓扑计算将多余的路径阻塞掉，与寻址无关。而前面提到的那些寻址协议主要任务都是传递Tag计算转发路径，大部分协议会通过计算拓扑来防止环路，但也有如RIP这种不计算拓扑的协议，搞些水平分割、毒性逆转和最大跳数等机制来避免环路。</p>
+<p>封装解封装技术是网络入口与出口节点在原始数据信息前将Tag进行加载剥离动作，寻址技术则是在网络节点之间运行的交互动作。在很多协议技术中提到的数据平面其实就是封装转发，而控制平面就是标识寻址。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E6%95%B0%E9%80%9A%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E6%A8%A1%E5%9E%8B.png" /></p>
+<p>图是不是很眼熟，大部分的网络协议够可以照着这个模型去套的：</p>
+<p>对于IP来说，Sender和Receiver就是TCP协议栈，Edge就是IP协议栈，Core就是Router，Payload就是TCP数据，Tag就是IP头中的目的IP；
+对于Ethernet来说，Sender和Receiver就是IP协议栈，Edge就是网卡接口，Core就是Switch，Payload就是IP数据，Tag即使Ethernet头中的目的MAC；
+对于MPLS来说，Sender和Receiver就是CE，Edge就是PE，Core就是P；Payload就是Ethernet/IP数据，Tag就是MPLS标签；
+甚至对于分布式结构机框交换机来说，Sender和Receiver就是接口板转发芯片，Edge就是接口板上的交换接口芯片，Core就是交换芯片，Payload就是Ethernet数据报文，Tag就是目的Slot ID和Port ID（交换芯片转发时只看Slot ID，目的接口板查看Port ID）。</p>
+<p>传统的FC/IP/Ethernet技术体系上面已经玩不出来花了，现在新的技术大都是在FC/IP/Ethernet等数据载荷外面增加个新的Tag并设计一套对应的寻址协议机制，或者干脆就还使用原有的IP/MAC作为外层封装Tag，只对寻址进行变化。对于后者，作者喜欢称呼其为嫁接技术，神马MAC in MAC，IP in IP，MAC in IP等等都属于此列。此类技术的好处是兼容，缺点是继承，缝缝补补肯定没有全新设计来得自由。</p>
+<p>封装比较好明白，协议理解的难点其实在于寻址。前面说了，静态寻址要手工一条条配置，规模大了能累死人。动态寻址技术配置工作量小了很多，但复杂度就上升了好几个台阶。
+劳力就劳心，目前看来大家还是更喜欢劳心一些。回来说动态寻址，除了RIP这种早期的靠广播来传递路由Tag的寻址协议外，后面出来的都是先建邻接，后画拓扑，再传Tag的三步走了，从OSPF/BGP/ISIS到下面要讲到的TRILL/SPB/OTV皆是如此。对寻址技术主要内容简单归纳如下，细的就要看各协议具体实现了。</p>
+<p>建立邻居靠Hello（Advertise），拆除邻接等超时。各自为根绘周边，主根扩散画整网。Tag同步传更新，本地过期发删除。</p>
+<p>”</p>
+<p>理解的确实深刻，如果有幸原作者能够看到这个专栏，还望多多指教~</p></div>
+	
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nvstarter'; 
+    var disqus_title = '网络虚拟化的前世、今生与未来';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="/archives.html">Archives</a>
+                <li><a href="/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="/category/misc.html">misc</a></li>
+                <li><a href="/category/network-virtualizationsdndata-center.html">network virtualization,sdn,data center</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://getpelican.com/">Pelican</a></li>
+                <li><a href="http://python.org/">Python.org</a></li>
+                <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                <li><a href="#">You can modify those links in your config file</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="#">You can add links in your config file</a></li>
+                <li><a href="#">Another social link</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

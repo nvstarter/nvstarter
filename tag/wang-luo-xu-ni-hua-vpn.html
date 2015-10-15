@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Start For Network Virtualization</title>
+    <meta name="description" content="">
+    <meta name="author" content="Chen Zhang">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="/theme/local.css" rel="stylesheet">
+    <link href="/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="">Start For Network Virtualization</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+        
+
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-6-da-er-ceng-jian-jie.html"><h1>原创博客——网络虚拟化的前世、今生与未来(6-大二层简介)</h1></a>
+六 03 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><h2>初识大二层</h2>
+<p>刚接触网络的一段时间里，作者经常把数据中心和云等同在一起来看待，以为数据中心就是成群的虚拟机和各种神秘的转发设备，支撑着“按需服务”的商业模型。后来才慢慢意识到，这是两个交织在一起但完全不同的概念。数据中心是把服务器放在一起统一进行管理的技术，属于社会分工的产物。大型的公司通常自建私有的数据中心，而没有足够财力的小公司就只能租用公共数据中心的IT资源。云是数据中心一种高度进化的形态，开启了“按需租用”的商业模式，可以说是IT集约化运营的趋势催生了云计算。云计算数据中心成为了近十年来IT界的弄潮儿，对原有的计算、存储和网络技术产生了深刻的变革。云计算数据中心中，有关计算和存储的技术作者并不熟悉，不过可以说这两方面已经做得相当成熟了，云网络则成了云的短板，在相当程度上制约着云的扩散。</p>
+<p>众所周知，互联网在最初设计的时候，主要是为了能够让分散的用户访问集中的服务器，即所谓的CS模型。在这种模型下，“路由交换”架构一统江湖，其中以“IP+以太网”为霸主——小范围内通过交换机进行本地高速交换，大范围间通过路由器进行IP智能寻址。在云出现以前，“IP+以太网”技术在数通领域基本上已经做到了极致，在长达30年的时间中通杀一切，不说做到了垄断也是八九不离十了。</p>
+<p>但是在云计算的IT模型中，以下几点技术问题对于传统的“IP+以太网”提出了严峻的挑战：
+<em> 公有云与混合云的发展使得“多租户”成为了云网络中的基本场景，这要求网络能够做到深度的隔离。
+</em> “位置”的概念变得无关紧要，虚拟机的分布甚至需要突破物理“位置”的局限，这对于IP这种对链路进行寻址的技术提出了极大的挑战。
+<em> 随着虚拟机间，服务器间，虚拟机与服务器间的东西向流量的量级直线上升，传统的二层自学习已经不能满足二层内部的通信需要。
+</em> 现有的环路技术收敛慢，链路利用率低下，同时二层的组网规模受到极大的限制。
+* 分布式计算和存储技术，提出了对网络无丢包与高带宽交换的需求。</p>
+<p>这些技术上的挑战引发了网络界对于“路由—交换”架构的重新思考。传统网络中，客户机与远端服务器间的南北向流量占据了网络总流量的80%，通常这些主机的接入位置也比较固定。一般地，路由器的一个端口下面不会有太多的二层，每个二层中也不会有太多的主机。可以说在传统的数通网络中，路由器是网络的主宰，交换机一直扮演着小弟的角色。但是在云计算数据中心网络中，这种情况却发生了根本性的变化，“大二层”就成为了这几年网络界一个热门的词汇，交换技术迎来了一大波商机。</p>
+<p>说到大二层，这个思路的起源是这样的：集约化运营作为云的一个核心思想，使得虚拟机迁移成为了云中刚性的需求。由于一些License与MAC地址是绑定的，迁移前后虚机的MAC地址最好不变，同时为了保证业务连续，迁移前后虚机的IP地址也不可以变化。而迁移的位置是由能耗决定的，网络必须支持虚机漂到任何位置。所以二层要“大”，必须大到横贯整个DC网络，甚至是在多个DC之间。</p>
+<p>其次，大二层的内涵还在于“更智能”。随着云中业务种类的变迁——虚拟机迁移，大规模分布式计算和业务冗余备份等，二层内部的东西向流量逐渐占到了数据中心流量的70%。自学习属于“傻瓜式”的转发方法，不具备多路径负载均衡的能力，而xSTP还阻塞掉了相当部分的链路，资源利用率很低，因此传统的二层很难针对云中的新业务流量进行调优。</p>
+<p>另外，大二层还要“更能装”。随着公有云的兴起和IaaS模式的普及，“多租户”环境成为了云网络必备的基础能力。而传统二层网络中，VLAN最多支持的租户数量为4K，已经跟不上业务的飞速发展。因此，大二层需要跳出VLAN的思维，支撑起更多用户的需求。</p>
+<p>为了解决上述问题，向大二层的目标迈进，最近十年面向云数据中心的网络虚拟化技术风起云涌。接下来，我们将对这些技术逐一进行深入的介绍。</p></div>
+        <hr />
+    </div>
+		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.1-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h2>VPN--概述</h2>
+<p>书接上文，说完了VLAN，该VPN隆重登场了。相比于VLAN这种简单的局域网技术，VPN可是要复杂的多。VPN并不是一种协议或者标准，而是一类技术的统称，或者更准确地说，是用户跨越广域网进行私有网络互联这样一种业务形态。</p>
+<p>早期租用DDN专线或者通过ISDN拨号来实现私有网络互联是可行的，缺点是站点间的带宽是固定的，所用电路资源是独占的，不够灵活而且费用昂贵。之后，出现了ATM/FR/IP这类基于分组的广域网技术，克服了由资源独占引发的问题，VPN的概念也不过由于ATM/FR因为种种原因最后败给了IP，因此现在的VPN技术基本上都是基于IP的VPN了（MPLS也算是IP的一个变种）。当然，有实力的话可以自建光纤进行互联，不过可能也只有像Google这种级别的公司才玩得转。这个小节我们主要来讲一讲基于IP的VPN，如不特殊说明，以下简称IP VPN为VPN。</p>
+<p>这段历史告诉我们，VPN并不是网络大牛们一时兴起，心血来潮搞的技术花花肠子，而是因为这是实打实的需求，是巨大的市场，是兵家必争的利益至高点。这十几年来，VPN为运营商带来了不可估量的效益，几乎靠一己之力支撑着运营商的Internet对公业务。如果说VLAN是网络虚拟化的鼻祖，那么VPN则真正把网络虚拟化作为一个领域推广开来了。</p>
+<p>之所以说VPN是网络虚拟化的技术，从业务形态上来看就一清二楚了，过多的解释反而会显得多余，这里作者就不再画蛇添足了。</p>
+<p>VPN的技术可谓五花八门，从这个大类技术的层面上来说，谈不到什么具体的帧格式或者包头，倒是以前面提到的“封装 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html"><h2>原创博客-网络虚拟化的前世、今生与未来(5.2-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h2>站点对站点VPN</h2>
+<p>按照业务场景细分，站点对站点VPN还可以再具体分为内联网（Intranet） VPN和外联网（Extranet）VPN。两者的区别主要在前者联的是同一家公司的总部与分支，后者是指公司与外部利益相关群体。不过两者的区别主要是在与一些访问策略和地址规划上的不同，从网络虚拟化的角度来说区别并不大。故此这里的讲解将对两者等同看待，首先简单地介绍一下接下来会涉及到的VPN技术。</p>
+<p>QinQ（802.1ad，PB，Provider Bridge），VLAN堆栈技术。通过将公网VLAN 标签（S-Tag）封装在用户私网VLAN 标签（C-Tag）前，使报文带着两层VLAN Tag穿越公网。PE负责增加/剥除4个字节的S-Tag，P要求支持802.1q中的Trunk概念，根据用户的MAC地址和S-VLAN在公网进行2层自学习转发。</p>
+<p>PBB（802.1ah，Provider Backbone Bridge），运营商骨干网桥接技术，属于一种MACinMAC的隧道技术，可配合QinQ使用。通过定义双层MAC地址的帧结构，PE将B-MAC和B-Tag封装在CE数据帧前，以P要求支持Trunk概念，根据B-MAC和B-VLAN在公网进行2层自学习转发。</p>
+<p>配一张VLAN，QinQ和PBB的格式图吧，一目了然 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html"><h2>原创博客-网络虚拟化的前世、今生与未来(5.3-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h2>远程接入VPN</h2>
+<p>远程接入这种VPN应用形式，常见的业务场景有两种。一种是移动办公人员接入企业私网，另一种是用户希望绕开默认的网络出口以获得完整的访问权限，俗称“翻墙”。大众所熟知的VPN基本上等同于“翻墙”，其实这只是VPN技术的冰山一角。</p>
+<p>相比于站点对站点VPN，远程接入VPN的个人用户数量多而且位置分散。因此，远程接入VPN的技术基本上都是基于隧道的——具有标签性质的技术，大多依赖有限的标签资源和公网的配置，而基于Overlay方式的隧道技术对于公网来说是完全透明的，具备较强的可扩展性和灵活性。</p>
+<p>根据隧道承载的数据业务，远程接入VPN可分为二层隧道，三层隧道和高层隧道。其中二层隧道以L2TP（RFC 2661），三层隧道以IPsec（RFC 4031）VPN，高层隧道以SSL（RFC 6101） VPN为目前的主流技术。下面仍然从网络虚拟化的几个基本设计原则出发，对三种技术进行对比。</p>
+<h3>连通性</h3>
+<p>老规矩，直接上表格。其中Overlay隧道的特征决定了这些技术基本上都是点对点的，L2TP Multihop（RFC 2661）扩展了L2TP点对多点的能力。</p>
+<table>
+<thead>
+<tr>
+<th>VPN技术</th>
+<th>数据业务</th>
+<th>流量类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L2TP</td>
+<td>二层数据帧</td>
+<td>点对点/点对多点 ...</td></tr></tbody></table> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.4-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h2>其它VPN分类</h2>
+<p>除了根据应用形式来对VPN技术进行分类，还有很多其它的分类方式，下面列出其中常见的几种分类，以便读者对VPN技术有更多维度的认识。</p>
+<p>用Markdown编辑表格实在是费劲，直接截图了～</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/VPN%20%E5%88%86%E7%B1%BB.png" /></p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html">read more</a></div>
+    </div>	
+				
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="/tag/wang-luo-xu-ni-hua-vpn.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+ 
+  
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="/archives.html">Archives</a>
+                <li><a href="/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="/category/misc.html">misc</a></li>
+                <li><a href="/category/network-virtualizationsdndata-center.html">network virtualization,sdn,data center</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://getpelican.com/">Pelican</a></li>
+                <li><a href="http://python.org/">Python.org</a></li>
+                <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                <li><a href="#">You can modify those links in your config file</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="#">You can add links in your config file</a></li>
+                <li><a href="#">Another social link</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

@@ -51,15 +51,45 @@
     <div class="row">
 
         <div class="span9">
+        
+
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html"><h1>原创博客——网络虚拟化的前世、今生与未来(9-隧道技术引言)</h1></a>
+六 10 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><h2>从铁三角到隧道</h2>
+<p>开始讲解数据平面的虚拟化前，我们首先来看一看数据中心网络典型的网络拓扑。左图3层分别为接入、汇聚和核心层，一般来说，接入层负责制定虚拟机的接入策略，汇聚层负责二层的传输，核心层作为网关负责三层的互通。当然了，如果汇聚层设备能够作为网关，也可以简化为右图的两层拓扑。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E4%BB%8E%E9%93%81%E4%B8%89%E8%A7%92%E5%88%B0%E9%9A%A7%E9%81%93%20%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%84.png" /></p>
+<p>数据中心传统的虚拟化做法是VLAN+xSTP +自学习，VLAN负责隔离，STP负责拓扑整合，自学习负责转发，三者贯穿于传统数据中心的二层网络。不过三者各有各的问题：VLAN虽然简单成熟，但作为虚网的标签可用的只有4094个；自学习要依靠泛洪这种极度浪费资源的行为来在二层探路，而且汇聚/核心层设备MAC地址表压力太大；xSTP更是老大难的问题——收敛慢、规模受限、链路利用率低、配置复杂等等，还要考虑如何与其他二层协议配合设计。虽然有诸多的问题，但传统数据中心毕竟规模有限，倒也对付的过去。</p>
+<p>2006年，亚马逊推出了AWS，开启了公有云的时代，大二层网络的呼声越来越高。面对着越来越多的用户，面对着越来越大的流量压力和被迫闲置的链路带宽，数据中心网络的转型迫在眉睫。虽然结合之前讲过的控制平面虚拟化技术，能够在一定程度上弱化上述问题，不过对于大二层的设计目标来说，底层网络仍然是不够智能、不够灵活的。于是多种多样的隧道技术出现了，逐渐代替了 “VLAN+xSTP+自学习”的铁三角，成为了最近几年炙手可热的新一代数据中心网络技术。</p>
+<p>接下来要花很多的章节来讲隧道，其中大多数技术与都可以看做是VPN技术的变种，这里再次把VPN的通用技术模型放上来，以便后续章节进行讲解。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vpn%20model.png" /></p></div>
+        <hr />
+    </div>
+		
+<div class="pagination">
 <ul>
-    <li><a href="/tag/8021q.html">802.1Q</a></li>
-    <li><a href="/tag/wang-luo-xu-ni-hua-mo-xing-li-jie.html">网络虚拟化，模型理解</a></li>
-    <li><a href="/tag/wang-luo-xu-ni-hua-vdc-vs-logical-system.html">网络虚拟化，VDC， VS， Logical System</a></li>
-    <li><a href="/tag/wang-luo-xu-ni-hua-vlan.html">网络虚拟化，VLAN</a></li>
-    <li><a href="/tag/wang-luo-xu-ni-hua-vlan-stp-zi-xue-xi.html">网络虚拟化，VLAN， STP， 自学习</a></li>
-    <li><a href="/tag/wang-luo-xu-ni-hua-vpn.html">网络虚拟化，VPN</a></li>
-    <li><a href="/tag/wang-luo-xu-ni-hua-vss-irf-css-vpc.html">网络虚拟化，VSS， IRF， CSS， vPC</a></li>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="/tag/wang-luo-xu-ni-hua-vlan-stp-zi-xue-xi.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
 </ul>
+</div>
+ 
+  
         </div>
         
         <div class="span3">
