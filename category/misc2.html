@@ -55,40 +55,6 @@
 
         
 
-
-    <div class='article'>
-        <div class="content-title">
-            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-6-da-er-ceng-jian-jie.html"><h1>原创博客——网络虚拟化的前世、今生与未来(6-大二层简介)</h1></a>
-六 03 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- 
-        </div>
-        
-        <div><h1>初识大二层</h1>
-<p>刚接触网络的一段时间里，作者经常把数据中心和云等同在一起来看待，以为数据中心就是成群的虚拟机和各种神秘的转发设备，支撑着“按需服务”的商业模型。后来才慢慢意识到，这是两个交织在一起但完全不同的概念。数据中心是把服务器放在一起统一进行管理的技术，属于社会分工的产物。大型的公司通常自建私有的数据中心，而没有足够财力的小公司就只能租用公共数据中心的IT资源。云是数据中心一种高度进化的形态，开启了“按需租用”的商业模式，可以说是IT集约化运营的趋势催生了云计算。云计算数据中心成为了近十年来IT界的弄潮儿，对原有的计算、存储和网络技术产生了深刻的变革。云计算数据中心中，有关计算和存储的技术作者并不熟悉，不过可以说这两方面已经做得相当成熟了，云网络则成了云的短板，在相当程度上制约着云的扩散。</p>
-<p>众所周知，互联网在最初设计的时候，主要是为了能够让分散的用户访问集中的服务器，即所谓的CS模型。在这种模型下，“路由交换”架构一统江湖，其中以“IP+以太网”为霸主——小范围内通过交换机进行本地高速交换，大范围间通过路由器进行IP智能寻址。在云出现以前，“IP+以太网”技术在数通领域基本上已经做到了极致，在长达30年的时间中通杀一切，不说做到了垄断也是八九不离十了。</p>
-<p>但是在云计算的IT模型中，以下几点技术问题对于传统的“IP+以太网”提出了严峻的挑战：
-<em> 公有云与混合云的发展使得“多租户”成为了云网络中的基本场景，这要求网络能够做到深度的隔离。
-</em> “位置”的概念变得无关紧要，虚拟机的分布甚至需要突破物理“位置”的局限，这对于IP这种对链路进行寻址的技术提出了极大的挑战。
-<em> 随着虚拟机间，服务器间，虚拟机与服务器间的东西向流量的量级直线上升，传统的二层自学习已经不能满足二层内部的通信需要。
-</em> 现有的环路技术收敛慢，链路利用率低下，同时二层的组网规模受到极大的限制。
-* 分布式计算和存储技术，提出了对网络无丢包与高带宽交换的需求。</p>
-<p>这些技术上的挑战引发了网络界对于“路由—交换”架构的重新思考。传统网络中，客户机与远端服务器间的南北向流量占据了网络总流量的80%，通常这些主机的接入位置也比较固定。一般地，路由器的一个端口下面不会有太多的二层，每个二层中也不会有太多的主机。可以说在传统的数通网络中，路由器是网络的主宰，交换机一直扮演着小弟的角色。但是在云计算数据中心网络中，这种情况却发生了根本性的变化，“大二层”就成为了这几年网络界一个热门的词汇，交换技术迎来了一大波商机。</p>
-<p>说到大二层，这个思路的起源是这样的：集约化运营作为云的一个核心思想，使得虚拟机迁移成为了云中刚性的需求。由于一些License与MAC地址是绑定的，迁移前后虚机的MAC地址最好不变，同时为了保证业务连续，迁移前后虚机的IP地址也不可以变化。而迁移的位置是由能耗决定的，网络必须支持虚机漂到任何位置。所以二层要“大”，必须大到横贯整个DC网络，甚至是在多个DC之间。</p>
-<p>其次，大二层的内涵还在于“更智能”。随着云中业务种类的变迁——虚拟机迁移，大规模分布式计算和业务冗余备份等，二层内部的东西向流量逐渐占到了数据中心流量的70%。自学习属于“傻瓜式”的转发方法，不具备多路径负载均衡的能力，而xSTP还阻塞掉了相当部分的链路，资源利用率很低，因此传统的二层很难针对云中的新业务流量进行调优。</p>
-<p>另外，大二层还要“更能装”。随着公有云的兴起和IaaS模式的普及，“多租户”环境成为了云网络必备的基础能力。而传统二层网络中，VLAN最多支持的租户数量为4K，已经跟不上业务的飞速发展。因此，大二层需要跳出VLAN的思维，支撑起更多用户的需求。</p>
-<p>为了解决上述问题，向大二层的目标迈进，最近十年面向云数据中心的网络虚拟化技术风起云涌。接下来，我们将对这些技术逐一进行深入的介绍。</p></div>
-        <hr />
-    </div>
-		
-
- 
-        
-
  
 
     <div class='article'>
@@ -157,14 +123,36 @@ VPN技术  | 数据业务|流量类型
 L2TP  | 二层数据帧 | 点对点/点对多点 ... <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html">read more</a></div>
     </div>	
 				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.4-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>其它VPN分类</h1>
+<p>除了根据应用形式来对VPN技术进行分类，还有很多其它的分类方式，下面列出其中常见的几种分类，以便读者对VPN技术有更多维度的认识。</p>
+<p>用Markdown编辑表格实在是费劲，直接截图了～</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/VPN%20%E5%88%86%E7%B1%BB.png" /></p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html">read more</a></div>
+    </div>	
+				
 <div class="pagination">
 <ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+    <li class="prev"><a href="/category/misc.html">&larr; Previous</a></li>
 
-    <li class="active"><a href="/tag/wang-luo-xu-ni-hua-vpn.html">1</a></li>
-    <li class=""><a href="/tag/wang-luo-xu-ni-hua-vpn2.html">2</a></li>
+    <li class=""><a href="/category/misc.html">1</a></li>
+    <li class="active"><a href="/category/misc2.html">2</a></li>
+    <li class=""><a href="/category/misc3.html">3</a></li>
 
-    <li class="next"><a href="/tag/wang-luo-xu-ni-hua-vpn2.html">Next &rarr;</a></li>
+    <li class="next"><a href="/category/misc3.html">Next &rarr;</a></li>
 
 </ul>
 </div>

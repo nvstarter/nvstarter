@@ -62,28 +62,28 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 
         </div>
 	
-        <div><h2>控制平面一虚多</h2>
+        <div><h1>控制平面一虚多</h1>
 <p>说完了控制平面多虚一，再来说说控制平面一虚多。我们知道，通过计算资源的一虚多技术，一台物理服务器上可以生成多个虚拟机，它们完全独立的进行工作。如果能够参照计算的一虚多，将一台网络设备的操作系统分为多个操作系统，每个操作系统对应一台虚拟设备，而这些虚拟设备的数据、控制和管理都是完全独立的，网管配置起来可以少费不少脑细胞。而且，多个虚拟设备还能够做备份、迁移什么的，反正只要能虚出来，玩法就有很多了。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E6%8E%A7%E5%88%B6%E4%B8%80%E8%99%9A%E5%A4%9A%20%E7%A4%BA%E6%84%8F.png" /></p>
 <p>Cisco VDC和Huawei VS是上述虚拟化路线的代表技术，上面列表展示了几项主要网络一虚多技术的区别。早期的VRF技术也算是控制平面的一虚多技术，为不同的虚拟网络运行不同的路由进程。不过VRF的一虚多是个半吊子，它只实现了转发的隔离——各个VRF都运行在同一个OS中，设备的计算资源包括CPU和内存还都是抢占的，如果一个虚网的路由进程跑死了，其它虚网也难免要跟着遭殃。下面这两张图是Cisco VDC的胶片，能够直观地说明这一问题。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vdc%E8%83%B6%E7%89%87.png" /></p>
-<h3>1) Cisco VDC</h3>
+<h2>1) Cisco VDC</h2>
 <p>VDC（ Virtual Device Contexts）是Cisco基于操作系统级别的一虚多网络虚拟化技术。Cisco在数据中心NxK系列交换机中提供了对VDC的支持，N7000能够支持4个VDC实例（2E引擎支持8个）。每个VDC实例都支持4K个VLAN和256个VRF，从理论上来说所有的逻辑转发资源都相应地扩展了4/8倍。当然，物理资源是不能够随之扩展的，例如每个物理端口只能关联一个VDC实例（有一个例外，就是以太网的VDC和存储网络的VDC能够共用一个端口）。当然，VDC也支持通过配置自定义多个实例间的资源分配机制。</p>
 <p>每个VDC都是一个独立的故障域，一个VDC挂了，另外的VDC不会受到影响。如果希望实现高可用性，不同的VDC之间还可以做个备份什么的，VDC还提供了实例间切换、迁移的功能。</p>
 <p>从技术本质上来说，VDC是一种对操作系统的虚拟化，关于这方面作者也了解的不多，就不做过多的分析了。除了Cisco的VDC，Juniper和华为也有类似的技术，Juniper的叫做Logical System，华为的叫做VS。</p>
 <p>参考资料：
-http://wenku.baidu.com/link?url=4TH7c4yy_k4XoqwSityAOSoN-rTwpGnhXIVckOnVgW5tuTH8DPyGrotOwXg0iiQzQHUfFB3knHJCMDjkv8sQu7fYqOeBN23Te7n4JFao4wC</p>
-<p>http://wenku.baidu.com/link?url=kNHtQC8Pmy_CP_vP2hJHJdhwfE4EEUNKslhV4ftmLC2LjtNWrpF3RSY4s-8ApWsQczC8O8ZzF1KlIk7eW82RK7YKg5gWu-gviONUwbGALvS</p>
-<p>http://www.cisco.com/web/CN/products/products_netsol/switches/products/ca7000/nexus_7000_virtualization.html</p>
-<h3>2) Huawei VS</h3>
+<a href="http://wenku.baidu.com/link?url=4TH7c4yy_k4XoqwSityAOSoN-rTwpGnhXIVckOnVgW5tuTH8DPyGrotOwXg0iiQzQHUfFB3knHJCMDjkv8sQu7fYqOeBN23Te7n4JFao4wC">example link</a></p>
+<p><a href="http://wenku.baidu.com/link?url=kNHtQC8Pmy_CP_vP2hJHJdhwfE4EEUNKslhV4ftmLC2LjtNWrpF3RSY4s-8ApWsQczC8O8ZzF1KlIk7eW82RK7YKg5gWu-gviONUwbGALvS">example link</a></p>
+<p><a href="http://www.cisco.com/web/CN/products/products_netsol/switches/products/ca7000/nexus_7000_virtualization.html">example link</a></p>
+<h2>2) Huawei VS</h2>
 <p>VS（Virtual System）是华为搞出来的控制平面一虚多技术，与VDC技术大同小异，不过名字不同罢了。VS在VDC的基础上的一个改进是能够支持1虚16，另外在VS中，端口分配机制扩展为两种模式——端口模式（端口可以被分配到任何VS中，与VDC相同）和端口组模式（一块线卡上的端口只能分配到同一个VS中），不过对于这个新增的端口组模式，作者暂时也没想到能有什么具体的好处。其它的方面，目前还没有看到VS与VDC有什么区别。下面参考资料中附了一个VS的白皮书，大家有兴趣可以翻一翻。</p>
-<p>参考资料：
-enterprise.huawei.com/ilink/enenterprise/download/HW_309696</p>
-<p>http://wenku.baidu.com/link?url=HNBt36gRiEmsQUSD2e1Ai_rJa-F50--EFUqoaQUov0B59ipEF6HFnVssrPmF4XFxK3hJVv26ZNOmb2cSPhXz62hrwE8pKkjtdu4fEVB-QR_</p>
-<h3>3) Juniper Logical System</h3>
+<h3>参考资料：</h3>
+<p><a href="enterprise.huawei.com/ilink/enenterprise/download/HW_309696">example link</a></p>
+<p><a href="http://wenku.baidu.com/link?url=HNBt36gRiEmsQUSD2e1Ai_rJa-F50--EFUqoaQUov0B59ipEF6HFnVssrPmF4XFxK3hJVv26ZNOmb2cSPhXz62hrwE8pKkjtdu4fEVB-QR_">example link</a></p>
+<h2>3) Juniper Logical System</h2>
 <p>与VDC/VS的设计目标没有什么区别，Logical System也是将一台设备虚出来多台控制、管理独立的设备。不过Logical System虚出来的都是路由器，三层的功能基本上都支持，如OSPF、BGP、PIM、RSVP、MPLS等等，也有一些switchover和restart的HA机制，但完全没有二层交换的逻辑。而且Logical System貌似比较适合用于试验环境，更像是一个仿真的系统。网上不多的介绍都是关于使用Logical System做Certificate Learning的，实际用于生产环境没有找到具体的案例。不具体说了，也给一个Juniper工程师写的Logical System手册吧。</p>
-<p>参考资料：
-http://www.juniper.net/techpubs/en_US/junos14.1/information-products/pathway-pages/config-guide-logical-systems/config-guide-logical-systems.pdf</p>
+<h3>参考资料：</h3>
+<p><a href="http://www.juniper.net/techpubs/en_US/junos14.1/information-products/pathway-pages/config-guide-logical-systems/config-guide-logical-systems.pdf">example link</a></p>
 <p>VDC类技术的用处还是蛮多的，这里分享一个有趣的应用实例，当然这只是关于VDC的一个little trick。</p>
 <p>TRILL是一种以太网的多链路传输技术，通过在以太网帧前面封装TRILL报头，实现了二层的智能选路。TRILL Egress为TRILL域的终结点，往往不具备本地三层网关的功能，因此在实际组网时，往往要增加一台网关设备。使用VDC，能够在Nexus 7000上虚出两个VDC实例，一个做TRILL的终结点，另一个做网关，即可以节约一台设备的CAPEX。如果有需要，可以再用一个VDC实例起VxLAN/OTV的隧道，在一台汇聚层设备上实现了3台设备的功能。</p>
 <p>上述的场景可提炼为“纵向整合”，即将不同功能、层次的物理设备进行整合。相对应的VDC类技术还能够进行“横向整合”，即在同一个网络层次上面，将多台提供相类似的功能或者业务的物理设备进行整合，在多租户场景下非常有价值。当然了，两者结合起来部署也是可以的，能够最大程度地降低设备的CAPEX。另外，VDC结合VSS或者VS结合CSS，先一虚多再多虚一，可以说应该能够满足大多数虚拟化业务的组网需求了。</p>

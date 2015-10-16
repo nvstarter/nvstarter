@@ -62,7 +62,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 
         </div>
 	
-        <div><h2>站点对站点VPN</h2>
+        <div><h1>站点对站点VPN</h1>
 <p>按照业务场景细分，站点对站点VPN还可以再具体分为内联网（Intranet） VPN和外联网（Extranet）VPN。两者的区别主要在前者联的是同一家公司的总部与分支，后者是指公司与外部利益相关群体。不过两者的区别主要是在与一些访问策略和地址规划上的不同，从网络虚拟化的角度来说区别并不大。故此这里的讲解将对两者等同看待，首先简单地介绍一下接下来会涉及到的VPN技术。</p>
 <p>QinQ（802.1ad，PB，Provider Bridge），VLAN堆栈技术。通过将公网VLAN 标签（S-Tag）封装在用户私网VLAN 标签（C-Tag）前，使报文带着两层VLAN Tag穿越公网。PE负责增加/剥除4个字节的S-Tag，P要求支持802.1q中的Trunk概念，根据用户的MAC地址和S-VLAN在公网进行2层自学习转发。</p>
 <p>PBB（802.1ah，Provider Backbone Bridge），运营商骨干网桥接技术，属于一种MACinMAC的隧道技术，可配合QinQ使用。通过定义双层MAC地址的帧结构，PE将B-MAC和B-Tag封装在CE数据帧前，以P要求支持Trunk概念，根据B-MAC和B-VLAN在公网进行2层自学习转发。</p>
@@ -73,210 +73,119 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>BGP/MPLS IP VPN（RFC 2547），使用BGP协议在公网上发布VPN路由，使用MPLS在公网上转发VPN报文。PE负责BGP交互，封装MPLS头，P为支持MPLS的路由器，根据MPLS Label进行转发。</p>
 <p>VPWS和VPLS，都属于MPLS VPN（RFC 4664）。VPWS由有Martini VPWS和Kompella VPWS两种实现方式，VPWS由有VPLS-LDP和VPLS-BGP两种实现方式。IPLS，是一种特殊的VPLS，只支持对IP分组的传输，CE为主机或者路由器。</p>
 <p>这么多技术，看起来都眼花，技术细节作者确实讲不动了。下面直接从网络虚拟化的设计原则出发来对这些技术进行对比。</p>
-<h3>连通性</h3>
+<h2>连通性</h2>
 <p>包括两个方面，一是技技术所支持的数据业务类型，二是所支持的流量类型。多说无益，直接上表格。</p>
-<table>
-<thead>
-<tr>
-<th>VPN技术</th>
-<th>数据业务</th>
-<th>流量类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>QinQ</td>
-<td>二层数据帧</td>
-<td>点对点/点对多点</td>
-</tr>
-<tr>
-<td>PBB</td>
-<td>二层数据帧</td>
-<td>点对点/点对多点</td>
-</tr>
-<tr>
-<td>GRE</td>
-<td>三层数据包</td>
-<td>点对点，支持伪广播</td>
-</tr>
-<tr>
-<td>IPsec VPN</td>
-<td>三层数据包</td>
-<td>点对点</td>
-</tr>
-<tr>
-<td>BGP/MPLS IP VPN</td>
-<td>三层数据包</td>
-<td>点对点</td>
-</tr>
-<tr>
-<td>VPWS</td>
-<td>二层数据帧</td>
-<td>点对点，伪广播（有待确认）</td>
-</tr>
-<tr>
-<td>VPLS</td>
-<td>二层数据帧</td>
-<td>点对点，支持伪广播</td>
-</tr>
-<tr>
-<td>IPLS</td>
-<td>二层数据帧，但是网络层只支持IP分组</td>
-<td>点对点，支持伪广播</td>
-</tr>
-</tbody>
+<!--
+VPN技术  | 数据业务|流量类型
+------------- | ------------- |------------
+QinQ  | 二层数据帧 | 点对点/点对多点   
+PBB  | 二层数据帧 | 点对点/点对多点
+GRE  | 三层数据包 | 点对点，支持伪广播 
+IPsec VPN  | 三层数据包 | 点对点 
+BGP/MPLS IP VPN  | 三层数据包 | 点对点 
+VPWS  | 二层数据帧 | 点对点，伪广播（有待确认） 
+VPLS  | 二层数据帧 | 点对点，支持伪广播 
+IPLS  | 二层数据帧，但是网络层只支持IP分组 | 点对点，支持伪广播
+-->
+
+<table border="2", align="center", text-align:"center">
+  <tr, align="center"><th>VPN技术</th><th>数据业务</th><th>流量类型</th></tr>
+  <tr, align="center"><td>QinQ</td><td>二层数据帧</td><td>点对点/点对多点</td></tr>
+  <tr, align="center"><td>PBB</td><td>二层数据帧</td><td>点对点/点对多点</td></tr>
+  <tr, align="center"><td>GRE</td><td>三层数据包</td><td>点对点，支持伪广播</td></tr>
+  <tr, align="center"><td>IPsec VPN</td><td>三层数据包</td><td>点对点</td></tr>
+  <tr, align="center"><td>BGP/MPLS IP VPN</td><td>三层数据包</td><td>点对点</td></tr>
+  <tr, align="center"><td>VPWS</td><td>二层数据帧</td><td>点对点，伪广播（有待确认）</td></tr>
+  <tr, align="center"><td>VPLS</td><td>二层数据帧</td><td>点对点,支持伪广播</td></tr>
+  <tr, align="center"><td>IPLS</td><td>二层数据帧，但是网络层只支持IP分组</td><td>点对点,支持伪广播</td></tr>
 </table>
-<h3>安全性</h3>
+
+<p><br></p>
+<h2>安全性</h2>
 <p>从控制平面和转发平面的安全性考虑。</p>
-<table>
-<thead>
-<tr>
-<th>VPN技术</th>
-<th>控制平面</th>
-<th>数据平面</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>QinQ</td>
-<td>无控制平面</td>
-<td>依赖于公网配置</td>
-</tr>
-<tr>
-<td>PBB</td>
-<td>无控制平面</td>
-<td>依赖于公网配置</td>
-</tr>
-<tr>
-<td>GRE</td>
-<td>无控制平面</td>
-<td>不依赖于公网配置，提供Key值进行认证，但不提供加密</td>
-</tr>
-<tr>
-<td>IPsec VPN</td>
-<td>无控制平面</td>
-<td>不依赖于公网配置，提供认证和加密</td>
-</tr>
-<tr>
-<td>BGP/MPLS IP VPN</td>
-<td>路由发布认证，VRF关联，路由RT等机制</td>
-<td>依赖于公网配置</td>
-</tr>
-<tr>
-<td>VPWS</td>
-<td>Martini方式无控制平面，Kompella方式同BGP/MPLS IP VPN</td>
-<td>依赖于公网配置</td>
-</tr>
-<tr>
-<td>VPLS</td>
-<td>VPLS-LDP方式无控制平面，VPLS-BGP方式同BGP/MPLS IP VPN</td>
-<td>依赖于公网配置</td>
-</tr>
-<tr>
-<td>IPLS</td>
-<td>无控制平面（有待确认）</td>
-<td>依赖于公网配置</td>
-</tr>
-</tbody>
+<!--
+VPN技术  | 控制平面|数据平面
+------------- | ------------- |------------
+QinQ  | 无控制平面|依赖于公网配置
+PBB  | 无控制平面|依赖于公网配置
+GRE  | 无控制平面|不依赖于公网配置，提供Key值进行认证，但不提供加密
+IPsec VPN  | 无控制平面|不依赖于公网配置，提供认证和加密
+BGP/MPLS IP VPN  | 路由发布认证，VRF关联，路由RT等机制|依赖于公网配置
+VPWS  | Martini方式无控制平面，Kompella方式同BGP/MPLS IP VPN|依赖于公网配置
+VPLS  | VPLS-LDP方式无控制平面，VPLS-BGP方式同BGP/MPLS IP VPN|依赖于公网配置
+IPLS  | 无控制平面（有待确认）|依赖于公网配置
+-->
+
+<table border="2", align="center", text-align:"center">
+  <tr, align="center"><th>VPN技术</th><th>控制平面</th><th>数据平面</th></tr>
+  <tr, align="center"><td>QinQ</td><td>无控制平面</td><td>依赖于公网配置</td></tr>
+  <tr, align="center"><td>PBB</td><td>无控制平面</td><td>依赖于公网配置</td></tr>
+  <tr, align="center"><td>GRE</td><td>无控制平面</td><td>不依赖于公网配置，提供Key值进行认证，但不提供加密</td></tr>
+  <tr, align="center"><td>IPsec VPN</td><td>无控制平面</td><td>不依赖于公网配置，提供认证和加密</td></tr>
+  <tr, align="center"><td>BGP/MPLS IP VPN</td><td>路由发布认证，VRF关联，路由RT等机制</td><td>依赖于公网配置</td></tr>
+  <tr, align="center"><td>VPWS</td><td>Martini方式无控制平面，Kompella方式同BGP/MPLS IP VPN</td><td>依赖于公网配置</td></tr>
+  <tr, align="center"><td>VPLS</td><td>VPLS-LDP方式无控制平面，VPLS-BGP方式同BGP/MPLS IP VPN</td><td>依赖于公网配置</td></tr>
+  <tr, align="center"><td>IPLS</td><td> 无控制平面（有待确认）</td><td>依赖于公网配置</td></tr>
 </table>
-<h3>服务质量</h3>
+
+<p><br></p>
+<h2>服务质量</h2>
 <p>广域网传输是VPN技术转发速率的瓶颈，这里主要考虑上述VPN技术在广域网的传输保障机制。</p>
-<table>
-<thead>
-<tr>
-<th>VPN技术</th>
-<th>公网QoS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>QinQ</td>
-<td>S-Tag中的PR</td>
-</tr>
-<tr>
-<td>PBB</td>
-<td>B-Tag中的PR</td>
-</tr>
-<tr>
-<td>GRE</td>
-<td>无</td>
-</tr>
-<tr>
-<td>IPsec VPN</td>
-<td>专用广域网加速设备</td>
-</tr>
-<tr>
-<td>BGP/MPLS IP VPN</td>
-<td>MPLS/RSVP TE</td>
-</tr>
-<tr>
-<td>VPWS</td>
-<td>MPLS/RSVP TE</td>
-</tr>
-<tr>
-<td>VPLS</td>
-<td>MPLS/RSVP TE</td>
-</tr>
-<tr>
-<td>IPLS</td>
-<td>MPLS/RSVP TE</td>
-</tr>
-</tbody>
+<!--
+VPN技术  | 公网QoS
+------------- | -------------
+QinQ  | S-Tag中的PR
+PBB  | B-Tag中的PR
+GRE  | 无
+IPsec VPN  | 专用广域网加速设备
+BGP/MPLS IP VPN  | MPLS/RSVP TE
+VPWS  | MPLS/RSVP TE
+VPLS  | MPLS/RSVP TE
+IPLS  | MPLS/RSVP TE
+-->
+
+<table border="2", align="center", text-align:"center">
+  <tr, align="center"><th>VPN技术</th><th> 公网QoS</th></tr>
+  <tr, align="center"><td>QinQ</td><td>S-Tag中的PR</td></tr>
+  <tr, align="center"><td>PBB</td><td>B-Tag中的PR</td></tr>
+  <tr, align="center"><td>GRE</td><td>无</td></tr>
+  <tr, align="center"><td>IPsec VPN</td><td>专用广域网加速设备</td></tr>
+  <tr, align="center"><td>BGP/MPLS IP VPN</td><td>MPLS/RSVP TE</td></tr>
+  <tr, align="center"><td>VPWS</td><td>MPLS/RSVP TE</td></tr>
+  <tr, align="center"><td>VPLS</td><td>MPLS/RSVP TE</td></tr>
+  <tr, align="center"><td>IPLS</td><td>MPLS/RSVP TE</td></tr>
 </table>
-<h3>可扩展性</h3>
+
+<p><br></p>
+<h2>可扩展性</h2>
 <p>VPN支持的虚网数理论上限取决于标识虚网的字段位数，实际上受限于PE、P设备上资源的共享和分配。</p>
-<table>
-<thead>
-<tr>
-<th>VPN技术</th>
-<th>虚网数量</th>
-<th>其他因素</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>QinQ</td>
-<td>S-VLAN标签， 4K*4K</td>
-<td>CE为交换机时，P需要学习用户MAC地址，限制了用户规模</td>
-</tr>
-<tr>
-<td>PBB</td>
-<td>I-SID标签，16million</td>
-<td>P根据运营商MAC转发，不需要学习用户MAC地址，比QinQ用户规模大</td>
-</tr>
-<tr>
-<td>GRE</td>
-<td>一般为特定用户内部自用</td>
-<td>无明确因素</td>
-</tr>
-<tr>
-<td>IPsec VPN</td>
-<td>一般为特定用户内部自用</td>
-<td>无明确因素</td>
-</tr>
-<tr>
-<td>BGP/MPLS IP VPN</td>
-<td>理论上无上限</td>
-<td>PE数量，VPN接口数量，路由条目数量，LSP数量等等</td>
-</tr>
-<tr>
-<td>VPWS</td>
-<td>同上</td>
-<td>同上</td>
-</tr>
-<tr>
-<td>VPLS</td>
-<td>同上</td>
-<td>同上</td>
-</tr>
-<tr>
-<td>IPLS</td>
-<td>同上</td>
-<td>同上</td>
-</tr>
-</tbody>
+<!--
+VPN技术  | 虚网数量|其他因素
+------------- | -------------|------------
+QinQ  | S-VLAN标签， 4K*4K|CE为交换机时，P需要学习用户MAC地址，限制了用户规模
+PBB  | I-SID标签，16million|P根据运营商MAC转发，不需要学习用户MAC地址，比QinQ用户规模大
+GRE  | 一般为特定用户内部自用|无明确因素
+IPsec VPN  | 一般为特定用户内部自用|无明确因素
+BGP/MPLS IP VPN  | 理论上无上限|PE数量，VPN接口数量，路由条目数量，LSP数量等等
+VPWS  | 同上|同上
+VPLS  | 同上|同上
+IPLS  | 同上|同上
+-->
+
+<table border="2", align="center", text-align:"center">
+  <tr, align="center"><th>VPN技术</th><th>虚网数量</th><th>其他因素</th></tr>
+  <tr, align="center"><td>QinQ</td><td>S-VLAN标签， 4K*4K</td><td>CE为交换机时，P需要学习用户MAC地址，限制了用户规模</td></tr>
+  <tr, align="center"><td>PBB</td><td>I-SID标签，16million</td><td>P根据运营商MAC转发，不需要学习用户MAC地址，比QinQ用户规模大</td></tr>
+  <tr, align="center"><td>GRE</td><td>一般为特定用户内部自用</td><td>无明确因素</td></tr>
+  <tr, align="center"><td>IPsec VPN</td><td>一般为特定用户内部自用</td><td>无明确因素</td></tr>
+  <tr, align="center"><td>BGP/MPLS IP VPN</td><td>理论上无上限</td><td>PE数量，VPN接口数量，路由条目数量，LSP数量等等</td></tr>
+  <tr, align="center"><td>VPWS</td><td>同上</td><td>同上</td></tr>
+  <tr, align="center"><td>VPLS</td><td>同上</td><td>同上</td></tr>
+  <tr, align="center"><td>IPLS</td><td>同上</td><td>同上</td></tr>
 </table>
-<h3>运维自动化</h3>
+
+<p><br></p>
+<h2>运维自动化</h2>
 <p>有控制平面的VPN技术相对好一些，没有控制平面的VPN技术一般为纯静态配置，自动化较差。</p></div>
 	
         <hr>

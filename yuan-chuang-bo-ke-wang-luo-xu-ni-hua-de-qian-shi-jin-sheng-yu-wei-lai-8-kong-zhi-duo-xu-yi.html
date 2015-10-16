@@ -62,11 +62,11 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 
         </div>
 	
-        <div><h2>控制平面多虚一</h2>
+        <div><h1>控制平面多虚一</h1>
 <p>控制平面多虚一，指的是将两台或者多台设备的资源（包括操作系统、转发实例、转发表、端口等）进行整合，对外表现为一台逻辑设备，以Cisco VSS，Huawei CSS和H3C的IRF为代表，后来Cisco又推出了vPC技术作为对VSS的升级（虽然vPC已经很难说是控制平面多虚一技术了）。其实在这些技术中，除了转发实例、转发表这些转发逻辑层面的资源以外，端口这些数据平面的资源都被连带着整合了，因此又称“虚拟机框”技术。为了方便起见，以下就称为“虚拟机框”技术了。这类技术和堆叠技术，感觉应该本质上是一回事，不过堆叠设备必须要落在一起，要通过专门的堆叠口、堆叠线进行连接，而“虚拟机框”设备间则可以通过线卡上的端口进行以太网的连接，距离能拉的很远。</p>
 <p>几台设备搞成一台，好处是很多的。第一，简化了运维，以前几台设备各配各的配置，复杂不说还容易出错，堆叠后管理员配一次就都OK了。第二，高可用性，每台设备里面都有引擎，一台坏了能够自动倒换，也就省去了HSRP这些麻烦事。第三点，也是最重要的是，“虚拟机框”技术在提供端口冗余的同时，能够避开STP，除了网管心头的一个大害。这类技术典型的组网场景如下图右侧所示：</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E6%8E%A7%E5%88%B6%E5%A4%9A%E8%99%9A%E4%B8%80%20%E7%A4%BA%E6%84%8F.png" /></p>
-<h3>1) VSS</h3>
+<h2>1) VSS</h2>
 <p>VSS是Cisco Catalyst 6500系列交换机推出的虚拟机框技术，支持对两台6500设备以主备模式进行整合。其中主用交换机中的引擎负责这个逻辑设备的转发决策，形成转发表，而备用交换机不断地同步相关信息，不进行学习和计算。而主备用设备的线卡都是分布式的，同时进行数据的转发。VSS主要有以下技术点：</p>
 <ul>
 <li>控制信令VSL（Virtual Switch Link）。VSS技术通过VSL将两个机架绑定成为一个虚拟的交换系统，它依赖于控制信令VSLP的交互，以完成主备的协商以及状态的同步。同时VSL也能在主备交换机间传输普通数据流量，这时它其实就相当于虚拟设备的背板走线。当然了，为实现虚拟设备的线速转发，VSL链路应该具备足够的带宽。</li>
@@ -76,48 +76,26 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 </ul>
 <p>虽然VSS只允许两台物理设备的虚拟化，不过通过虚拟设备间的互联仍可进一步简化核心网的拓扑。如下图所示，图中汇聚层和核心层均使用了VSS技术，保证高可用性的同时形成了一个天然无环的拓扑结构。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vss.png" /></p>
-<h3>2) CSS/IRF</h3>
+<h2>2) CSS/IRF</h2>
 <p>CSS、IRF 2分别是华为、华三私有的“虚拟机框”技术。CSS的前身是iStack，iStack通过堆叠方式支持盒式设备的多虚一，而CSS支持对框式设备的多虚一。IRF 2的前身是IRF 1，IRF 1通过堆叠方式支持盒式设备的多虚一，而IRF 2同时支持盒式设备/框式设备的多虚一。CSS/IRF 2和VSS的基本原理和组网架构如出一辙，也就是换换名称而已，对比如下。</p>
-<table>
-<thead>
-<tr>
-<th>技术</th>
-<th>控制信令</th>
-<th>可靠性</th>
-<th>链路聚合</th>
-<th>双活监测</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cisco VSS</td>
-<td>VSLP</td>
-<td>NSF/SSO</td>
-<td>MEC</td>
-<td>PAgP/VSLP/Fast Hello/IP BFD</td>
-<td></td>
-</tr>
-<tr>
-<td>Huawei CSS</td>
-<td>堆叠竞争报文</td>
-<td>支持倒换，可能不支持NSF</td>
-<td>Eth-Trunk</td>
-<td>私有DAD协议</td>
-<td></td>
-</tr>
-<tr>
-<td>H3C IRF</td>
-<td>IRF Link</td>
-<td>支持倒换，可能支持NSF</td>
-<td>支持，没找到技术名称</td>
-<td>LACP/免费ARP/BFD</td>
-<td></td>
-</tr>
-</tbody>
+<!--
+技术  | 控制信令| 可靠性| 链路聚合| 双活监测
+------------- | ------------- | ------------- | ------------- | ------------- |
+Cisco VSS | VSLP | NSF/SSO|MEC |PAgP/VSLP/Fast Hello/IP BFD
+Huawei CSS| 堆叠竞争报文| 支持倒换，可能不支持NSF| Eth-Trunk |私有DAD协议
+H3C IRF | IRF Link | 支持倒换，可能支持NSF |支持，没找到技术名称| LACP/免费ARP/BFD
+-->
+
+<table border="2", align="center", text-align:"center">
+  <tr, align="center"><th></th><th>控制信令</th><th>可靠性</th><th>链路聚合</th>th>双活监测</th></tr>
+  <tr, align="center"><td>VSS</td><td>VSLP</td><td>NSF/SSO</td><td>MEC</td><td>PAgP/VSLP/Fast Hello/IP BFD</td></tr>
+  <tr, align="center"><td>CSS</td><td>堆叠竞争报文</td><td>支持倒换，可能不支持NSF</td><td>Eth-Trunk</td><td>私有DAD协议</td></tr>
+  <tr, align="center"><td>IRF</td><td>IRF Link</td><td>支持倒换，可能支持NSF</td><td>支持，没找到技术名称</td><td>LACP/免费ARP/BFD</td></tr>
 </table>
+
+<p><br></p>
 <p>另外，相比于VSS只支持两台设备的虚拟化，CSS和IRF 2都支持1：N的主备用模式，能够提供更高的可靠性。从目前能够找到的资料来看，CSS和IRF 2最多都能支持4台框式交换机，或者9台盒式交换机的虚拟化。其实，Cisco最开始设计VSS时，也准备支持1：N模式，但是后来由于Cisco的控制平面多虚一的技术路线演化为了vPC，因此也就不了了之了。</p>
-<h3>3) vPC</h3>
+<h2>3) vPC</h2>
 <p>Cisco在Nexus系列交换机中摒弃掉VSS，推出了 vPC（ virtual Port-Channel）特性。前面说过VSS/IRF是整机级别的虚拟化， 而vPC则是接口级的虚拟化，其实就是实现了VSS中的跨设备链路聚合。因此在vPC中只需要对成员接口进行链路聚合相关的信息同步即可，不需要对整机进行状态同步。下图中其中vPC对应MEC，Peer-Link对应VSL，CFS Protocol对应VSLP ，Peer-Keepalive Link对应VSLP Fast Hello。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vPC.png" /></p>
 <p>下面通过一个二层转发的实例来介绍vPC的工作原理，其中左图为ARP请求的泛洪过程，右图为ARP应答，假设SW1 port 11，SW2 port 21属于vPC 1，SW1 port12，SW2 port 22属于vPC 1。SW1通过port 11上收到ARP请求，之后在vpc link和port 12上进行泛洪。SW 2收到该ARP请求后，判定port 21与port 22与SW 1中的一些端口进行了vPC绑定，因此不会从这两个端口进行转发。同时SW 1通过CFS消息告诉SW 2 MAC_A接在vPC 1上。当SW 2通过port 22收到ARP应答后，查找MAC地址表，得知目的地址为MAC_A的帧应该向vPC 1的成员端口转发，于是通过port 21转发给SW 3，同时通过CFS告知SW 1 MAC_B接在vPC 2上。之后的通信得以按照学习到的信息进行转发。</p>

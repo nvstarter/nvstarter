@@ -58,19 +58,20 @@
  
 
     <div class='article'>
-        <a href="/yuan-chuang-bo-ke-zhuan-lan-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-1-qian-yan.html"><h2>原创博客专栏——网络虚拟化的前世、今生与未来(1-前言)</h2></a>
-        <div class= "well small"> 一 28 九月 2015
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.1-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
 
 by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
 
 
  </div>
-        <div class="summary"><h2>写在前面</h2>
-<p>从今天开始做一个网络虚拟化的专栏。网络技术，永远是服务于实际需求的。近几年来，网络的架构正在发生着深刻的变化，尤其是在云计算的IT模型中，要求云中的网络资源能够像CPU/内存和磁盘一样，得到足够的抽象和灵活的调度，这用术语来描述就是虚拟化的能力。经过多年技术的发展和市场的检验，计算和存储的虚拟化已经就位，而网络的虚拟化则成为了三缺一里面的那个一，尽管传统网络里面也有VLAN、VPN等虚拟化技术，但是它们远远不能满足云的需求。</p>
-<p>SDN和NFV在这几年火爆的很。从最开始学术界的牵头喊口号，到现在工业界积极的布局圈地，SDN和NFV正在进行着软着陆，并没有出现“跳得高，摔得惨”的悲剧。软件定义一切的大潮已成不可逆转之势，而软件提供的灵活性和自动化为网络的革新提供了技术上的便利条件。因此SDN和NFV成为了网络界的新宠，网络虚拟化也将被重新定义。</p>
-<p>如果把APP和Web看作是互联网的前端，那么形形色色的网络盒子就是互联网的后台，相比于前端市场的非理性繁荣，后台的市场则一直不温不火，因为这个市场的创业门槛过高，研发的周期过长，并不具备移动互联网快速试错、快速迭代的特点。SDN的提出则极大地降低了这个门槛，甚至可以说是解放了被压抑了多年的网络从业者。可以看到近几年来网络领域出现了不少创业公司，不过遗憾的是其中鲜有大红大紫者，因此在这波SDN的浪潮中，找到方向感还是很重要的。</p>
-<p>从客观上来讲，是云计算的发展将网络虚拟化推到了技术的前沿。不过，网络虚拟化却不只是云的独家需求。铁塔的挂牌意味着将来三大运营商的设备都要收归国有，虚拟运营商可能真的不只是停留在概念上了。这些实实在在的国有资产要在虚拟运营商间分配 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-zhuan-lan-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-1-qian-yan.html">read more</a></div>
+        <div class="summary"><h1>VPN--概述</h1>
+<p>书接上文，说完了VLAN，该VPN隆重登场了。相比于VLAN这种简单的局域网技术，VPN可是要复杂的多。VPN并不是一种协议或者标准，而是一类技术的统称，或者更准确地说，是用户跨越广域网进行私有网络互联这样一种业务形态。</p>
+<p>早期租用DDN专线或者通过ISDN拨号来实现私有网络互联是可行的，缺点是站点间的带宽是固定的，所用电路资源是独占的，不够灵活而且费用昂贵。之后，出现了ATM/FR/IP这类基于分组的广域网技术，克服了由资源独占引发的问题，VPN的概念也不过由于ATM/FR因为种种原因最后败给了IP，因此现在的VPN技术基本上都是基于IP的VPN了（MPLS也算是IP的一个变种）。当然，有实力的话可以自建光纤进行互联，不过可能也只有像Google这种级别的公司才玩得转。这个小节我们主要来讲一讲基于IP的VPN，如不特殊说明，以下简称IP VPN为VPN。</p>
+<p>这段历史告诉我们，VPN并不是网络大牛们一时兴起，心血来潮搞的技术花花肠子，而是因为这是实打实的需求，是巨大的市场，是兵家必争的利益至高点。这十几年来，VPN为运营商带来了不可估量的效益，几乎靠一己之力支撑着运营商的Internet对公业务。如果说VLAN是网络虚拟化的鼻祖，那么VPN则真正把网络虚拟化作为一个领域推广开来了。</p>
+<p>之所以说VPN是网络虚拟化的技术，从业务形态上来看就一清二楚了，过多的解释反而会显得多余，这里作者就不再画蛇添足了。</p>
+<p>VPN的技术可谓五花八门，从这个大类技术的层面上来说，谈不到什么具体的帧格式或者包头，倒是以前面提到的“封装 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html">read more</a></div>
     </div>	
 				
 
@@ -80,18 +81,67 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
 
     <div class='article'>
-        <a href="/yuan-chuang-bo-ke-zhuan-lan-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-2-nvgai-nian-yu-mo-xing.html"><h2>原创博客专栏——网络虚拟化的前世、今生与未来(2-NV概念与模型)</h2></a>
-        <div class= "well small"> 一 28 九月 2015
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html"><h2>原创博客-网络虚拟化的前世、今生与未来(5.2-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
 
 by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
 
 
  </div>
-        <div class="summary"><h2>网络虚拟化的概念与模型</h2>
-<p>网络虚拟化由来已久，普遍认为最初的网络虚拟化起源于VLAN。我们知道以太网是通过广播进行自学习的，这在相对复杂的环境中会出现一些问题，比如公司的财务部门的数据经过广播可能会传播到外来人员接入的主机上，显然这是不能被接受的，VLAN的出现主要就是为了解决这一问题。VLAN（802.1Q）是一个局域网中的虚拟化技术，通过将一个局域网的广播域隔离为多个广播域，实现一个站点内不同的部门间的隔离。随着互联网的普及，又衍生出了多个站点间跨越Internet进行通信的需求，比如公司总部在北京，另外在上海有一个分部，每天分部的财务部门的数据都需要同步到总部去，显然这些数据是不允许暴露在公网上的。于是五花八门的VPN类技术出现了，极大地推动了网络虚拟化的发展。</p>
-<p>确切的说，网络虚拟化不是一类技术，而是一种用户使用网络的需求——用户总是希望能在内部进行任意的通信，而不希望被其他人所知。而随着需求的改变，技术本身是在不断地进化和迭代的。有了VLAN做隔离后，人们还希望能在一个二层内进行隔离，因此就出现了PVLAN；有了VPWS实现两个站点间的点对点互联，人们还希望通过点对多点进行多个站点间的互联，于是就出现了VPLS。诸如此类，不胜枚举。</p>
-<p>网络虚拟化也分为“一虚多”和“多虚一”两种基本模型。“一虚多”模型就是将一个物理/逻辑网络元素分解成多个逻辑网络元素，这里的网络元素可以是设备级别的，也可以指链路、拓扑等等。网络离不开控制和数据转发，控制负责软件的逻辑 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-zhuan-lan-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-2-nvgai-nian-yu-mo-xing.html">read more</a></div>
+        <div class="summary"><h1>站点对站点VPN</h1>
+<p>按照业务场景细分，站点对站点VPN还可以再具体分为内联网（Intranet） VPN和外联网（Extranet）VPN。两者的区别主要在前者联的是同一家公司的总部与分支，后者是指公司与外部利益相关群体。不过两者的区别主要是在与一些访问策略和地址规划上的不同，从网络虚拟化的角度来说区别并不大。故此这里的讲解将对两者等同看待，首先简单地介绍一下接下来会涉及到的VPN技术。</p>
+<p>QinQ（802.1ad，PB，Provider Bridge），VLAN堆栈技术。通过将公网VLAN 标签（S-Tag）封装在用户私网VLAN 标签（C-Tag）前，使报文带着两层VLAN Tag穿越公网。PE负责增加/剥除4个字节的S-Tag，P要求支持802.1q中的Trunk概念，根据用户的MAC地址和S-VLAN在公网进行2层自学习转发。</p>
+<p>PBB（802.1ah，Provider Backbone Bridge），运营商骨干网桥接技术，属于一种MACinMAC的隧道技术，可配合QinQ使用。通过定义双层MAC地址的帧结构，PE将B-MAC和B-Tag封装在CE数据帧前，以P要求支持Trunk概念，根据B-MAC和B-VLAN在公网进行2层自学习转发。</p>
+<p>配一张VLAN，QinQ和PBB的格式图吧，一目了然 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html"><h2>原创博客-网络虚拟化的前世、今生与未来(5.3-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>远程接入VPN</h1>
+<p>远程接入这种VPN应用形式，常见的业务场景有两种。一种是移动办公人员接入企业私网，另一种是用户希望绕开默认的网络出口以获得完整的访问权限，俗称“翻墙”。大众所熟知的VPN基本上等同于“翻墙”，其实这只是VPN技术的冰山一角。</p>
+<p>相比于站点对站点VPN，远程接入VPN的个人用户数量多而且位置分散。因此，远程接入VPN的技术基本上都是基于隧道的——具有标签性质的技术，大多依赖有限的标签资源和公网的配置，而基于Overlay方式的隧道技术对于公网来说是完全透明的，具备较强的可扩展性和灵活性。</p>
+<p>根据隧道承载的数据业务，远程接入VPN可分为二层隧道，三层隧道和高层隧道。其中二层隧道以L2TP（RFC 2661），三层隧道以IPsec（RFC 4031）VPN，高层隧道以SSL（RFC 6101） VPN为目前的主流技术。下面仍然从网络虚拟化的几个基本设计原则出发，对三种技术进行对比。</p>
+<h2>连通性</h2>
+<p>老规矩，直接上表格。其中Overlay隧道的特征决定了这些技术基本上都是点对点的，L2TP Multihop（RFC 2661）扩展了L2TP点对多点的能力。</p>
+<!--
+VPN技术  | 数据业务|流量类型
+------------- | ------------- |------------
+L2TP  | 二层数据帧 | 点对点/点对多点 ... <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.4-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>其它VPN分类</h1>
+<p>除了根据应用形式来对VPN技术进行分类，还有很多其它的分类方式，下面列出其中常见的几种分类，以便读者对VPN技术有更多维度的认识。</p>
+<p>用Markdown编辑表格实在是费劲，直接截图了～</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/VPN%20%E5%88%86%E7%B1%BB.png" /></p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html">read more</a></div>
     </div>	
 				
 <div class="pagination">
@@ -100,8 +150,9 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 
     <li class=""><a href="/author/chen-zhang.html">1</a></li>
     <li class="active"><a href="/author/chen-zhang2.html">2</a></li>
+    <li class=""><a href="/author/chen-zhang3.html">3</a></li>
 
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+    <li class="next"><a href="/author/chen-zhang3.html">Next &rarr;</a></li>
 
 </ul>
 </div>

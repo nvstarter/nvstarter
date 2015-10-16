@@ -55,41 +55,56 @@
 
         
 
+ 
 
     <div class='article'>
-        <div class="content-title">
-            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html"><h1>原创博客——网络虚拟化的前世、今生与未来(4-VLAN)</h1></a>
-四 01 十月 2015
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(4-VLAN)</h2></a>
+        <div class= "well small"> 四 01 十月 2015
 
 by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
 
 
- 
-        </div>
-        
-        <div><h1>VLAN</h1>
+ </div>
+        <div class="summary"><h1>VLAN</h1>
 <p>首先，我们来看看传统网络里的网络虚拟化，这一个小专题来讲一讲VLAN。</p>
 <p>VLAN（Virtual LAN，虚拟局域网），是一个局域网的虚拟化技术，官方文件参考IEEE 802.1q。对于做网络的人来说，谈起它简直是如数家珍。VLAN可以说是网络虚拟化领域的老祖宗，可别看这个技术年头已经很久了，它的活力可不减当年——做VPN有QinQ，做策略有PVLAN，做融合有FCOE，做VPC有AWS的EC2等等，可以说由VLAN衍生出来的标签技术的应用在数通领域历久弥新，而基本上所有的以太网技术在设计或优化的时候都无法忽略VLAN的存在。这里纠正一个初学VLAN常见的概念性错误——虽然以太网在市场上已经成为了局域网的代名词，但是局域网不能和以太网划等号，VLAN是一种局域网技术，不是单纯为以太网设计的。</p>
 <p>按照惯例，先来看看802.1q中VLAN的帧格式吧，虽然都是老生常谈了。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vlan.jpg" /></p>
 <p>TYPE=0x8100，PRI是优先级字段，CFI不怎么常用，以太网中CFI=0。后面12位的VID就是VLAN的标签位，也就是说802.1q中一个局域网中最多有4096个VLAN，不过不同的交换机对VLAN的规划是不同的，用户实际在一台交换机上能用的VLAN数目要比4096少很多。很简单的一个字段吧，没有什么分域，更不能用来寻址，就只是一个标签，不过这对于传统局域网里的网络虚拟化来说就足够了。</p>
-<p>传统局域网中，虚拟化的需求就是不同组织间的隔离。</p>
-<p>怎么来识别不同的组织呢，VLAN中最为人熟知，也最为常用的方法是绑定端口与VLAN的关系，即所谓静态VLAN。当然这不是很灵活，因为这对于主机的物理接入位置有着明确的要求，于是由出现了与MAC地址绑定的动态识别方式。然而这还不够，因为这要求组织内用户只能使用特定的主机，于是又出现了基于身份的识别方式，基于应用的识别方式等等。识别之后，该组织的数据帧即被打上一个局域网内唯一的VID，直至送到目的二层主机前，或者在通过三层设备送出前才被剥掉。</p>
-<p>那么，怎么做到隔离呢？这主要包括广播的隔离和策略上的隔离。在以太网中，广播是由于二层的自学习算法造成的，VLAN解决广播隔离的方法就是一个广播域一个VLAN，一个VLAN一张MAC地址表，这可以理解为是最早的VRF技术。策略的隔离呢，二层被VLAN划开之后当然是由三层的设备负责，可以通过VACL或者是路由的配置来做。这样一来一台物理的以太网交换机就被逻辑地划分成了多台属于不同VLAN的子交换机，属于网络虚拟化里的“一虚多”模型。</p>
-<p>搞定了一台交换机上的虚拟化，新需求又来了。在大一点的公司里，一个部门可能要分布在好几层楼中，不可能都扯常常的线到一台交换机上啊，一方面也没那么多端口，另一方面以太网对距离也有限制，只能通过多台交换机互联来解决。VLAN对于以太网的做法是TRUNK技术（就按Cisco的叫法吧，谁让人家是老大），一旦交换机互联的端口配置/协商为TRUNK端口，那么它就能传输多个VLAN的流量。</p>
-<p>一台交换机上的VLAN配置，可以理解为节点的“一虚多”，而TRUNK技术可以理解为是对链路的“一虚多”，它们加在一起虚拟化了整个局域网的拓扑。模型是不是很重要？理解了模型，就理解了网络虚拟化的根源。</p>
-<p>VLAN网络虚拟化的精髓基本上就是上面这么多了。从最开始提出的网络虚拟化原则来看，连通性解决了，因为VLAN只做标签不做寻址，连通性还是每个VLAN里的MAC表来保证的；安全性这一点上，VLAN的隔离工作做的基本上挺不错了，就是ACL的配置有点麻烦，另外如果要在一个VLAN里面再隔离还有后来的PVLAN；QoS这一点上，有802.1p来规范。可扩展性这一点上，一个局域网中，VLAN最多只能支持4096个虚拟网络；运维的自动化方面，VLAN有VTP做集中配置与策略的分发。</p>
-<p>用VLAN做网络虚拟化在很多场景都足够了。不过在云网络中，4096个虚网的上限却成为了VLAN技术最大的瓶颈，于是VxLAN（Virtual Extensible LAN）出现了，火了。具体VxLAN的技术我们后面再讲，不过这里先提这么一句：两个技术的思路是截然不同的。也正是如此，VxLAN这个名字才尽显了VLAN在数通网络里的重要地位。</p>
-<p>可以说，VLAN是数通领域中最为重要的技术之一，它开启了网络虚拟化的时代。</p></div>
-        <hr />
-    </div>
-		
+<p>传统局域网中，虚拟化的需求就是不同组织间的隔离 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-3-shu-tong-wang-luo-xu-ni-hua.html"><h2>网络虚拟化的前世、今生与未来(3-数通网络虚拟化)</h2></a>
+        <div class= "well small"> 二 29 九月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>数通网络中的虚拟化</h1>
+<p>现有的互联网按照传输设备的不同，可以简单地划分为Packet Domain、Optical Domain和Circuit Domain。Optical Domain和Circuit Domain一般是用来做传输的，而互联网上的路由寻址和一些附加值业务则主要是由Packet Domain设备来实现的。这个系列的专题主要是讲Packet Domain里的网络虚拟化。</p>
+<p>Optical Domain和Circuit Domain是面向连接的，通过物理层的波长、时隙等信道特征可以天然地隔离不同用户的数据业务，并为用户提供不同的服务质量。相比之下，Packet Domain一般需要通过特定的字段来区分用户与用户的数据业务。数通网络中的虚拟化，最精辟的莫过于“封装—寻址”这一通用技术模型，或者说专业一点就是“Routed-Routing” Protocol。这部分内容，网上有很多的资料，作者之前看过一个大牛写的一个数据中心网络的技术专栏，其中对这部分内容的概括非常精炼、理解十分深刻，所以这里直接引用相关内容。</p>
+<p>“
+Routed Protocol和Routing Protocol两个词很好的对技术组成部分进行了分类。这里的Route可以进行广义理解，不要只限于IP，作者倾向于将Routed解释成封装，Routing解释成寻址。任何一段数据信息从起点A发送到终点B的过程中，中间网络做的事情就是封装与寻址两件事。</p>
+<p>由于中间网络只做传输，是不需要了解数据（载荷）信息的 ...</p> <a class="btn btn-info xsmall" href="/wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-3-shu-tong-wang-luo-xu-ni-hua.html">read more</a></div>
+    </div>	
+				
 <div class="pagination">
 <ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+    <li class="prev"><a href="/category/misc2.html">&larr; Previous</a></li>
 
-    <li class="active"><a href="/tag/wang-luo-xu-ni-hua-vlan.html">1</a></li>
+    <li class=""><a href="/category/misc.html">1</a></li>
+    <li class=""><a href="/category/misc2.html">2</a></li>
+    <li class="active"><a href="/category/misc3.html">3</a></li>
 
     <li class="next disabled"><a href="#">&rarr; Next</a></li>
 

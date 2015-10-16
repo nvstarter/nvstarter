@@ -68,7 +68,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
         </div>
         
-        <div><h2>从铁三角到隧道</h2>
+        <div><h1>从铁三角到隧道</h1>
 <p>开始讲解数据平面的虚拟化前，我们首先来看一看数据中心网络典型的网络拓扑。左图3层分别为接入、汇聚和核心层，一般来说，接入层负责制定虚拟机的接入策略，汇聚层负责二层的传输，核心层作为网关负责三层的互通。当然了，如果汇聚层设备能够作为网关，也可以简化为右图的两层拓扑。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E4%BB%8E%E9%93%81%E4%B8%89%E8%A7%92%E5%88%B0%E9%9A%A7%E9%81%93%20%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%84.png" /></p>
 <p>数据中心传统的虚拟化做法是VLAN+xSTP +自学习，VLAN负责隔离，STP负责拓扑整合，自学习负责转发，三者贯穿于传统数据中心的二层网络。不过三者各有各的问题：VLAN虽然简单成熟，但作为虚网的标签可用的只有4094个；自学习要依靠泛洪这种极度浪费资源的行为来在二层探路，而且汇聚/核心层设备MAC地址表压力太大；xSTP更是老大难的问题——收敛慢、规模受限、链路利用率低、配置复杂等等，还要考虑如何与其他二层协议配合设计。虽然有诸多的问题，但传统数据中心毕竟规模有限，倒也对付的过去。</p>
@@ -93,12 +93,12 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 
 
  </div>
-        <div class="summary"><h2>控制平面一虚多</h2>
+        <div class="summary"><h1>控制平面一虚多</h1>
 <p>说完了控制平面多虚一，再来说说控制平面一虚多。我们知道，通过计算资源的一虚多技术，一台物理服务器上可以生成多个虚拟机，它们完全独立的进行工作。如果能够参照计算的一虚多，将一台网络设备的操作系统分为多个操作系统，每个操作系统对应一台虚拟设备，而这些虚拟设备的数据、控制和管理都是完全独立的，网管配置起来可以少费不少脑细胞。而且，多个虚拟设备还能够做备份、迁移什么的，反正只要能虚出来，玩法就有很多了。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E6%8E%A7%E5%88%B6%E4%B8%80%E8%99%9A%E5%A4%9A%20%E7%A4%BA%E6%84%8F.png" /></p>
 <p>Cisco VDC和Huawei VS是上述虚拟化路线的代表技术，上面列表展示了几项主要网络一虚多技术的区别。早期的VRF技术也算是控制平面的一虚多技术，为不同的虚拟网络运行不同的路由进程。不过VRF的一虚多是个半吊子，它只实现了转发的隔离——各个VRF都运行在同一个OS中，设备的计算资源包括CPU和内存还都是抢占的，如果一个虚网的路由进程跑死了，其它虚网也难免要跟着遭殃。下面这两张图是Cisco VDC的胶片，能够直观地说明这一问题。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vdc%E8%83%B6%E7%89%87.png" /></p>
-<h3>1) Cisco VDC</h3>
+<h2>1) Cisco VDC</h2>
 <p>VDC（ Virtual Device Contexts）是Cisco基于操作系统级别的一虚多网络虚拟化技术。Cisco在数据中心NxK系列交换机中提供了对VDC的支持，N7000能够支持4个VDC实例（2E引擎支持8个）。每个VDC实例都支持4K个VLAN和256个VRF，从理论上来说所有的逻辑转发资源都相应地扩展了4/8倍。当然，物理资源是不能够随之扩展的，例如每个物理端口只能关联一个VDC实例 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-7-kong-zhi-yi-xu-duo.html">read more</a></div>
     </div>	
 				
@@ -117,7 +117,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 
 
  </div>
-        <div class="summary"><h2>控制平面多虚一</h2>
+        <div class="summary"><h1>控制平面多虚一</h1>
 <p>控制平面多虚一，指的是将两台或者多台设备的资源（包括操作系统、转发实例、转发表、端口等）进行整合，对外表现为一台逻辑设备，以Cisco VSS，Huawei CSS和H3C的IRF为代表，后来Cisco又推出了vPC技术作为对VSS的升级（虽然vPC已经很难说是控制平面多虚一技术了）。其实在这些技术中，除了转发实例、转发表这些转发逻辑层面的资源以外，端口这些数据平面的资源都被连带着整合了，因此又称“虚拟机框”技术。为了方便起见，以下就称为“虚拟机框”技术了。这类技术和堆叠技术，感觉应该本质上是一回事，不过堆叠设备必须要落在一起，要通过专门的堆叠口、堆叠线进行连接，而“虚拟机框”设备间则可以通过线卡上的端口进行以太网的连接，距离能拉的很远。</p>
 <p>几台设备搞成一台，好处是很多的。第一，简化了运维，以前几台设备各配各的配置，复杂不说还容易出错，堆叠后管理员配一次就都OK了。第二，高可用性，每台设备里面都有引擎，一台坏了能够自动倒换，也就省去了HSRP这些麻烦事。第三点，也是最重要的是，“虚拟机框 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-8-kong-zhi-duo-xu-yi.html">read more</a></div>
     </div>	
@@ -137,159 +137,10 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 
 
  </div>
-        <div class="summary"><h2>初识大二层</h2>
+        <div class="summary"><h1>初识大二层</h1>
 <p>刚接触网络的一段时间里，作者经常把数据中心和云等同在一起来看待，以为数据中心就是成群的虚拟机和各种神秘的转发设备，支撑着“按需服务”的商业模型。后来才慢慢意识到，这是两个交织在一起但完全不同的概念。数据中心是把服务器放在一起统一进行管理的技术，属于社会分工的产物。大型的公司通常自建私有的数据中心，而没有足够财力的小公司就只能租用公共数据中心的IT资源。云是数据中心一种高度进化的形态，开启了“按需租用”的商业模式，可以说是IT集约化运营的趋势催生了云计算。云计算数据中心成为了近十年来IT界的弄潮儿，对原有的计算、存储和网络技术产生了深刻的变革。云计算数据中心中，有关计算和存储的技术作者并不熟悉，不过可以说这两方面已经做得相当成熟了，云网络则成了云的短板，在相当程度上制约着云的扩散。</p>
 <p>众所周知，互联网在最初设计的时候，主要是为了能够让分散的用户访问集中的服务器，即所谓的CS模型。在这种模型下，“路由交换”架构一统江湖，其中以“IP+以太网”为霸主——小范围内通过交换机进行本地高速交换，大范围间通过路由器进行IP智能寻址。在云出现以前，“IP+以太网”技术在数通领域基本上已经做到了极致，在长达30年的时间中通杀一切，不说做到了垄断也是八九不离十了。</p>
 <p>但是在云计算的IT模型中，以下几点技术问题对于传统的“IP+以太网”提出了严峻的挑战 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-6-da-er-ceng-jian-jie.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.1-VPN)</h2></a>
-        <div class= "well small"> 五 02 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h2>VPN--概述</h2>
-<p>书接上文，说完了VLAN，该VPN隆重登场了。相比于VLAN这种简单的局域网技术，VPN可是要复杂的多。VPN并不是一种协议或者标准，而是一类技术的统称，或者更准确地说，是用户跨越广域网进行私有网络互联这样一种业务形态。</p>
-<p>早期租用DDN专线或者通过ISDN拨号来实现私有网络互联是可行的，缺点是站点间的带宽是固定的，所用电路资源是独占的，不够灵活而且费用昂贵。之后，出现了ATM/FR/IP这类基于分组的广域网技术，克服了由资源独占引发的问题，VPN的概念也不过由于ATM/FR因为种种原因最后败给了IP，因此现在的VPN技术基本上都是基于IP的VPN了（MPLS也算是IP的一个变种）。当然，有实力的话可以自建光纤进行互联，不过可能也只有像Google这种级别的公司才玩得转。这个小节我们主要来讲一讲基于IP的VPN，如不特殊说明，以下简称IP VPN为VPN。</p>
-<p>这段历史告诉我们，VPN并不是网络大牛们一时兴起，心血来潮搞的技术花花肠子，而是因为这是实打实的需求，是巨大的市场，是兵家必争的利益至高点。这十几年来，VPN为运营商带来了不可估量的效益，几乎靠一己之力支撑着运营商的Internet对公业务。如果说VLAN是网络虚拟化的鼻祖，那么VPN则真正把网络虚拟化作为一个领域推广开来了。</p>
-<p>之所以说VPN是网络虚拟化的技术，从业务形态上来看就一清二楚了，过多的解释反而会显得多余，这里作者就不再画蛇添足了。</p>
-<p>VPN的技术可谓五花八门，从这个大类技术的层面上来说，谈不到什么具体的帧格式或者包头，倒是以前面提到的“封装 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html"><h2>原创博客-网络虚拟化的前世、今生与未来(5.2-VPN)</h2></a>
-        <div class= "well small"> 五 02 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h2>站点对站点VPN</h2>
-<p>按照业务场景细分，站点对站点VPN还可以再具体分为内联网（Intranet） VPN和外联网（Extranet）VPN。两者的区别主要在前者联的是同一家公司的总部与分支，后者是指公司与外部利益相关群体。不过两者的区别主要是在与一些访问策略和地址规划上的不同，从网络虚拟化的角度来说区别并不大。故此这里的讲解将对两者等同看待，首先简单地介绍一下接下来会涉及到的VPN技术。</p>
-<p>QinQ（802.1ad，PB，Provider Bridge），VLAN堆栈技术。通过将公网VLAN 标签（S-Tag）封装在用户私网VLAN 标签（C-Tag）前，使报文带着两层VLAN Tag穿越公网。PE负责增加/剥除4个字节的S-Tag，P要求支持802.1q中的Trunk概念，根据用户的MAC地址和S-VLAN在公网进行2层自学习转发。</p>
-<p>PBB（802.1ah，Provider Backbone Bridge），运营商骨干网桥接技术，属于一种MACinMAC的隧道技术，可配合QinQ使用。通过定义双层MAC地址的帧结构，PE将B-MAC和B-Tag封装在CE数据帧前，以P要求支持Trunk概念，根据B-MAC和B-VLAN在公网进行2层自学习转发。</p>
-<p>配一张VLAN，QinQ和PBB的格式图吧，一目了然 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html"><h2>原创博客-网络虚拟化的前世、今生与未来(5.3-VPN)</h2></a>
-        <div class= "well small"> 五 02 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h2>远程接入VPN</h2>
-<p>远程接入这种VPN应用形式，常见的业务场景有两种。一种是移动办公人员接入企业私网，另一种是用户希望绕开默认的网络出口以获得完整的访问权限，俗称“翻墙”。大众所熟知的VPN基本上等同于“翻墙”，其实这只是VPN技术的冰山一角。</p>
-<p>相比于站点对站点VPN，远程接入VPN的个人用户数量多而且位置分散。因此，远程接入VPN的技术基本上都是基于隧道的——具有标签性质的技术，大多依赖有限的标签资源和公网的配置，而基于Overlay方式的隧道技术对于公网来说是完全透明的，具备较强的可扩展性和灵活性。</p>
-<p>根据隧道承载的数据业务，远程接入VPN可分为二层隧道，三层隧道和高层隧道。其中二层隧道以L2TP（RFC 2661），三层隧道以IPsec（RFC 4031）VPN，高层隧道以SSL（RFC 6101） VPN为目前的主流技术。下面仍然从网络虚拟化的几个基本设计原则出发，对三种技术进行对比。</p>
-<h3>连通性</h3>
-<p>老规矩，直接上表格。其中Overlay隧道的特征决定了这些技术基本上都是点对点的，L2TP Multihop（RFC 2661）扩展了L2TP点对多点的能力。</p>
-<table>
-<thead>
-<tr>
-<th>VPN技术</th>
-<th>数据业务</th>
-<th>流量类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>L2TP</td>
-<td>二层数据帧</td>
-<td>点对点/点对多点 ...</td></tr></tbody></table> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.4-VPN)</h2></a>
-        <div class= "well small"> 五 02 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h2>其它VPN分类</h2>
-<p>除了根据应用形式来对VPN技术进行分类，还有很多其它的分类方式，下面列出其中常见的几种分类，以便读者对VPN技术有更多维度的认识。</p>
-<p>用Markdown编辑表格实在是费劲，直接截图了～</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/VPN%20%E5%88%86%E7%B1%BB.png" /></p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(4-VLAN)</h2></a>
-        <div class= "well small"> 四 01 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h2>VLAN</h2>
-<p>首先，我们来看看传统网络里的网络虚拟化，这一个小专题来讲一讲VLAN。</p>
-<p>VLAN（Virtual LAN，虚拟局域网），是一个局域网的虚拟化技术，官方文件参考IEEE 802.1q。对于做网络的人来说，谈起它简直是如数家珍。VLAN可以说是网络虚拟化领域的老祖宗，可别看这个技术年头已经很久了，它的活力可不减当年——做VPN有QinQ，做策略有PVLAN，做融合有FCOE，做VPC有AWS的EC2等等，可以说由VLAN衍生出来的标签技术的应用在数通领域历久弥新，而基本上所有的以太网技术在设计或优化的时候都无法忽略VLAN的存在。这里纠正一个初学VLAN常见的概念性错误——虽然以太网在市场上已经成为了局域网的代名词，但是局域网不能和以太网划等号，VLAN是一种局域网技术，不是单纯为以太网设计的。</p>
-<p>按照惯例，先来看看802.1q中VLAN的帧格式吧，虽然都是老生常谈了。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vlan.jpg" /></p>
-<p>TYPE=0x8100，PRI是优先级字段，CFI不怎么常用，以太网中CFI=0。后面12位的VID就是VLAN的标签位，也就是说802.1q中一个局域网中最多有4096个VLAN，不过不同的交换机对VLAN的规划是不同的，用户实际在一台交换机上能用的VLAN数目要比4096少很多。很简单的一个字段吧，没有什么分域，更不能用来寻址，就只是一个标签，不过这对于传统局域网里的网络虚拟化来说就足够了。</p>
-<p>传统局域网中，虚拟化的需求就是不同组织间的隔离 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-3-shu-tong-wang-luo-xu-ni-hua.html"><h2>网络虚拟化的前世、今生与未来(3-数通网络虚拟化)</h2></a>
-        <div class= "well small"> 二 29 九月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h2>数通网络中的虚拟化</h2>
-<p>现有的互联网按照传输设备的不同，可以简单地划分为Packet Domain、Optical Domain和Circuit Domain。Optical Domain和Circuit Domain一般是用来做传输的，而互联网上的路由寻址和一些附加值业务则主要是由Packet Domain设备来实现的。这个系列的专题主要是讲Packet Domain里的网络虚拟化。</p>
-<p>Optical Domain和Circuit Domain是面向连接的，通过物理层的波长、时隙等信道特征可以天然地隔离不同用户的数据业务，并为用户提供不同的服务质量。相比之下，Packet Domain一般需要通过特定的字段来区分用户与用户的数据业务。数通网络中的虚拟化，最精辟的莫过于“封装—寻址”这一通用技术模型，或者说专业一点就是“Routed-Routing” Protocol。这部分内容，网上有很多的资料，作者之前看过一个大牛写的一个数据中心网络的技术专栏，其中对这部分内容的概括非常精炼、理解十分深刻，所以这里直接引用相关内容。</p>
-<p>“
-Routed Protocol和Routing Protocol两个词很好的对技术组成部分进行了分类。这里的Route可以进行广义理解，不要只限于IP，作者倾向于将Routed解释成封装，Routing解释成寻址。任何一段数据信息从起点A发送到终点B的过程中，中间网络做的事情就是封装与寻址两件事。</p>
-<p>由于中间网络只做传输，是不需要了解数据（载荷）信息的 ...</p> <a class="btn btn-info xsmall" href="/wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-3-shu-tong-wang-luo-xu-ni-hua.html">read more</a></div>
     </div>	
 				
 <div class="pagination">
@@ -298,6 +149,7 @@ Routed Protocol和Routing Protocol两个词很好的对技术组成部分进行�
 
     <li class="active"><a href="/author/chen-zhang.html">1</a></li>
     <li class=""><a href="/author/chen-zhang2.html">2</a></li>
+    <li class=""><a href="/author/chen-zhang3.html">3</a></li>
 
     <li class="next"><a href="/author/chen-zhang2.html">Next &rarr;</a></li>
 
