@@ -53,8 +53,8 @@
         <div class="span9">
     <div class='article'>
         <div class="content-title">
-            <h1>原创博客——网络虚拟化的前世、今生与未来(5.3-VPN)</h1>
-五 02 十月 2015
+            <h1>原创博客——网络虚拟化的前世、今生与未来(2-NV概念与模型)</h1>
+一 28 九月 2015
 
 by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
@@ -62,66 +62,30 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 
         </div>
 	
-        <div><h1>远程接入VPN</h1>
-<p>远程接入这种VPN应用形式，常见的业务场景有两种。一种是移动办公人员接入企业私网，另一种是用户希望绕开默认的网络出口以获得完整的访问权限，俗称“翻墙”。大众所熟知的VPN基本上等同于“翻墙”，其实这只是VPN技术的冰山一角。</p>
-<p>相比于站点对站点VPN，远程接入VPN的个人用户数量多而且位置分散。因此，远程接入VPN的技术基本上都是基于隧道的——具有标签性质的技术，大多依赖有限的标签资源和公网的配置，而基于Overlay方式的隧道技术对于公网来说是完全透明的，具备较强的可扩展性和灵活性。</p>
-<p>根据隧道承载的数据业务，远程接入VPN可分为二层隧道，三层隧道和高层隧道。其中二层隧道以L2TP（RFC 2661），三层隧道以IPsec（RFC 4031）VPN，高层隧道以SSL（RFC 6101） VPN为目前的主流技术。下面仍然从网络虚拟化的几个基本设计原则出发，对三种技术进行对比。</p>
-<h2>连通性</h2>
-<p>老规矩，直接上表格。其中Overlay隧道的特征决定了这些技术基本上都是点对点的，L2TP Multihop（RFC 2661）扩展了L2TP点对多点的能力。</p>
-<!--
-VPN技术  | 数据业务|流量类型
-------------- | ------------- |------------
-L2TP  | 二层数据帧 | 点对点/点对多点   
-IPsec VPN  | 三层数据包 | 点对点 
-SSL VPN | 主要为WEB应用 | 点对点 
--->
-
-<table border="2", align="center", text-align:"center">
-  <tr, align="center"><th>VPN技术</th><th>数据业务</th><th>流量类型</th></tr>
-  <tr, align="center"><td>L2TP</td><td>二层数据帧</td><td>点对点/点对多点</td></tr>
-  <tr, align="center"><td>IPsec VPN</td><td>三层数据包</td><td>点对点</td></tr>
-  <tr, align="center"><td>SSL VPN</td><td>主要为WEB应用</td><td>点对点</td></tr>
+        <div><h1>网络虚拟化的概念与模型</h1>
+<p>网络虚拟化由来已久，普遍认为最初的网络虚拟化起源于VLAN。我们知道以太网是通过广播进行自学习的，这在相对复杂的环境中会出现一些问题，比如公司的财务部门的数据经过广播可能会传播到外来人员接入的主机上，显然这是不能被接受的，VLAN的出现主要就是为了解决这一问题。VLAN（802.1Q）是一个局域网中的虚拟化技术，通过将一个局域网的广播域隔离为多个广播域，实现一个站点内不同的部门间的隔离。随着互联网的普及，又衍生出了多个站点间跨越Internet进行通信的需求，比如公司总部在北京，另外在上海有一个分部，每天分部的财务部门的数据都需要同步到总部去，显然这些数据是不允许暴露在公网上的。于是五花八门的VPN类技术出现了，极大地推动了网络虚拟化的发展。</p>
+<p>确切的说，网络虚拟化不是一类技术，而是一种用户使用网络的需求——用户总是希望能在内部进行任意的通信，而不希望被其他人所知。而随着需求的改变，技术本身是在不断地进化和迭代的。有了VLAN做隔离后，人们还希望能在一个二层内进行隔离，因此就出现了PVLAN；有了VPWS实现两个站点间的点对点互联，人们还希望通过点对多点进行多个站点间的互联，于是就出现了VPLS。诸如此类，不胜枚举。</p>
+<p>网络虚拟化也分为“一虚多”和“多虚一”两种基本模型。“一虚多”模型就是将一个物理/逻辑网络元素分解成多个逻辑网络元素，这里的网络元素可以是设备级别的，也可以指链路、拓扑等等。网络离不开控制和数据转发，控制负责软件的逻辑，数据转发依赖于硬件的性能，软件来驱动硬件的工作，于是两种模型根据虚拟化对象的不同又可细分为“控制平面一虚多”、“控制平面多虚一”、“数据平面一虚多”和“数据平面多虚一”。依照上述，下面的表格给出作者所知的网络虚拟化技术（好像避免不了要用到这个词）的分类，这里将以VxLAN代表的隧道技术分类为数据平面多虚一，考虑的是它解决了VLAN数量不够&gt;用的限制，将TRILL/SPB分类为数据平面多虚一考虑的是它实现了二层网络中的智能传输。不过这两类技术也在相互渗透，具体的我们后面再介绍。</p>
+<table border="2", align="center">
+   <tr>
+      <td>控制平面一虚多</td>
+      <td>Cisco VDC/Huawei VS/Juniper Logical System</td>
+   </tr>
+   <tr>
+      <td>控制平面多虚一</td>
+      <td>Cisco VSS/Huawei CSS/H3C IRF、Cisco vPC/Arista M-LAG、Cisco Fex/Huawei SVF</td>
+   </tr>
+   <tr>
+      <td>数据平面一虚多</td>
+      <td>VxLAN/NVGRE/STT/Geneve、SR-IOV、VN-LINK/M-TAG VEPA、FCOE</td>
+   </tr>
+   <tr>
+      <td>数据平面多虚一</td>
+      <td>RILL/SPB、Cisco OTV/Huawei EVN/H3C EVI、LISP</td>
+   <tr>
 </table>
 
-<p><br></p>
-<h2>安全性</h2>
-<p>远程接入的VPN技术需要直接或者间接地提供对身份验证和数据加密的支持，这同样是出于业务场景的需求。</p>
-<!--
-VPN技术  | 身份验证|数据加密
-------------- | ------------- |------------
-L2TP  | 依赖于PPP实现PAP/CHAP |依赖于PPP/IPsec实现
-IPsec VPN  | AH/ESP |ESP，通过IKE协商加密算法
-SSL VPN | SSL握手协议 |通过SSL握手可协商加密算法
--->
-
-<table border="2", align="center", text-align:"center">
-  <tr, align="center"><th>VPN技术</th><th>身份验证</th><th>数据加密</th></tr>
-  <tr, align="center"><td>L2TP</td><td>依赖于PPP实现PAP/CHAP</td><td>依赖于PPP/IPsec实现</td></tr>
-  <tr, align="center"><td>IPsec VPN</td><td>AH/ESP</td><td>ESP，通过IKE协商加密算法</td></tr>
-  <tr, align="center"><td>SSL VPN</td><td>SSL握手协议</td><td>通过SSL握手可协商加密算法</td></tr>
-</table>
-
-<p><br></p>
-<h2>服务质量</h2>
-<p>远程接入VPN，在公网上传输质量的保证只能靠专用设备加速。另外，L2TP扩展了在VPN接入服务器本地网络上的QoS机制（RFC 2661）。 </p>
-<!--
-VPN技术  | 公网QoS |本地QoS
-------------- | ------------- |------------
-L2TP  | 无 |区分服务AVP
-IPsec VPN  | 专用广域网加速设备 |无直接支持
-SSL VPN | 专用广域网加速设备 | 无直接支持
--->
-
-<table border="2", align="center", text-align:"center">
-  <tr, align="center"><th>VPN技术</th><th>公网QoS</th><th>本地QoS</th></tr>
-  <tr, align="center"><td>L2TP</td><td>无</td><td>区分服务AVP</td></tr>
-  <tr, align="center"><td>IPsec VPN</td><td>专用广域网加速设备</td><td>无直接支持</td></tr>
-  <tr, align="center"><td>SSL VPN</td><td>专用广域网加速设备</td><td>无直接支持</td></tr>
-</table>
-
-<p><br></p>
-<h2>可扩展性 &amp;&amp; 运维自动化</h2>
-<p>相比于站点对站点VPN技术的复杂性，远程接入VPN技术一般都为Overlay方式，属于公司内部的业务，运营商是不可见的。其可扩展性主要取决于VPN接入服务器的性能，接运维需要通过手工配置，但不需要经常变动。</p></div>
+<p>作者对网络虚拟化模型的另外一种理解，是从网络元素的角度来考虑的。网络，无非就是节点和链路，多个节点和多条链路组成了各种各样的拓扑。所以网络的虚拟化，整体上可以看做是拓扑的虚拟化，&gt;细节上可以看做是节点的虚拟化、链路的虚拟化。只是按照这种模型，对技术分类起来是很困难的，不过这并不妨碍它作为一种对网络虚拟化很好的理解方式。关于这种模型，到了讲SDN中的网络虚拟化时再来详细地分析。</p></div>
 	
         <hr>
 
@@ -129,7 +93,7 @@ SSL VPN | 专用广域网加速设备 | 无直接支持
 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'nvstarter'; 
-    var disqus_title = '原创博客——网络虚拟化的前世、今生与未来(5.3-VPN)';
+    var disqus_title = '原创博客——网络虚拟化的前世、今生与未来(2-NV概念与模型)';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

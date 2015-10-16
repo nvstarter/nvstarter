@@ -58,8 +58,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html"><h1>原创博客——网络虚拟化的前世、今生与未来(9-隧道技术引言)</h1></a>
-六 10 十月 2015
+            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-101-nvo3.html"><h1>原创博客——网络虚拟化的前世、今生与未来（10.1-NVo3）</h1></a>
+五 16 十月 2015
 
 by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
@@ -68,13 +68,56 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
         </div>
         
-        <div><h1>从铁三角到隧道</h1>
-<p>开始讲解数据平面的虚拟化前，我们首先来看一看数据中心网络典型的网络拓扑。左图3层分别为接入、汇聚和核心层，一般来说，接入层负责制定虚拟机的接入策略，汇聚层负责二层的传输，核心层作为网关负责三层的互通。当然了，如果汇聚层设备能够作为网关，也可以简化为右图的两层拓扑。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E4%BB%8E%E9%93%81%E4%B8%89%E8%A7%92%E5%88%B0%E9%9A%A7%E9%81%93%20%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%84.png" /></p>
-<p>数据中心传统的虚拟化做法是VLAN+xSTP +自学习，VLAN负责隔离，STP负责拓扑整合，自学习负责转发，三者贯穿于传统数据中心的二层网络。不过三者各有各的问题：VLAN虽然简单成熟，但作为虚网的标签可用的只有4094个；自学习要依靠泛洪这种极度浪费资源的行为来在二层探路，而且汇聚/核心层设备MAC地址表压力太大；xSTP更是老大难的问题——收敛慢、规模受限、链路利用率低、配置复杂等等，还要考虑如何与其他二层协议配合设计。虽然有诸多的问题，但传统数据中心毕竟规模有限，倒也对付的过去。</p>
-<p>2006年，亚马逊推出了AWS，开启了公有云的时代，大二层网络的呼声越来越高。面对着越来越多的用户，面对着越来越大的流量压力和被迫闲置的链路带宽，数据中心网络的转型迫在眉睫。虽然结合之前讲过的控制平面虚拟化技术，能够在一定程度上弱化上述问题，不过对于大二层的设计目标来说，底层网络仍然是不够智能、不够灵活的。于是多种多样的隧道技术出现了，逐渐代替了 “VLAN+xSTP+自学习”的铁三角，成为了最近几年炙手可热的新一代数据中心网络技术。</p>
-<p>接下来要花很多的章节来讲隧道，其中大多数技术与都可以看做是VPN技术的变种，这里再次把VPN的通用技术模型放上来，以便后续章节进行讲解。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vpn%20model.png" /></p></div>
+        <div><h1>NVo3之——端到端隧道</h1>
+<p>NVo3（Network Virtualization over Layer 3），是IETF 2014年十月份提出的数据中心虚拟化技术框架。NVo3基于IP/MPLS作为传输网，在其上通过隧道连接的方式，构建大规模的二层租户网络。NVo3的技术模型如下所示，PE设备称为NVE（Network Virtualization Element），VN Context作为Tag标识租户网络，P设备即为普通的IP/MPLS路由器。NVo3在设计之初，VxLAN与SDN的联合部署已经成为了数据中心的大趋势，因此NVo3的模型中专门画出了NVA（Network Virtualization Authority）作为NVE设备的控制器负责隧道建立、地址学习等控制逻辑。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/nvo3%20endend%20model.png" /></p>
+<p>NVo3的思想起源于VxLAN，结合NVGRE和STT的发展，目前收敛为Geneve。上述技术都是端到端的隧道，CE为虚拟机或物理服务器，其实单纯地从NVo3的模型角度来看，后面要介绍的OTV/EVN/EVI这些DC间互联的隧道技术都属于NVo3的框架中。本专题将对端到端的NVo3技术进行深入的介绍。</p>
+<h2>1) VxLAN</h2>
+<p>VxLAN（Virtual eXtensible LAN，RFC 7348），是Vmware和Cisco联合提出的一种大二层技术，突破了VLAN ID只有4k的限制，允许通过现有的IP网络进行隧道的传输。别看VxLAN名字听起来和VLAN挺像，但是两者技术上可没什么必然联系。VxLAN是一种MACinUDP的隧道，下面是VxLAN的报头。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vxaln.png" /></p>
+<p>VxLAN封装的是以太网帧，外层的报头可以为IPv4也可以为IPv6。UDP Src Port是外层UDP的源端口号，它的值通过hash得到，常用来实现ECMP；Dst Port为VxLAN从IANA申请的端口4789；UDP checksum如果不为0，出口VTEP（VxLAN的NVE）必须进行计算，计算结果必须与该字段一致才能进行解封装，不一致则进行丢弃，checksum如果为0，则出口VTEP无条件解封装；VNI是VxLAN的VN Context，长度为24位，支持16 million的租户；后面是CE送出来的Ethernet原始帧，VxLAN GW对其中的VLAN tag有所要求。</p>
+<p>NVo3技术中，NVE上的地址学习包括两类：第一类是学习本地VM的MAC与port的映射关系，第二类是学习远端VM的MAC地址与该VM所在NVE的IP地址的映射关系。标准VxLAN的地址学习仍为二层的自学习算法，通过组播在VTEP间泛洪。标准VxLAN的通信流程描述如下。</p>
+<p>首先，VTEP通过IGMP加入VNI 1的组播组，VNI 1中的BUM流量都将通过该组播组传输。虚拟机A与B间通信具体转发流程如下：VM A发送ARP请求，VTEP 1学习VM A的本地连接端口，然后将该ARP请求进行封装，标记好VNI后进行组播，VTEP 2收到后学习VNI 1中A的MAC地址与VTEP 1 的IP地址的映射关系，然后本地泛洪。B收到该ARP请求后进行回复，由于VTEP 2已经完成了自学习，因此VTEP 2封装报头后将向VTEP 1进行单播，同时VTEP 2学习VM B的本地连接端口。同理，VTEP 1收到ARP回复后，学习该VNI中MAC B与VTEP 2 IP地址的映射关系，然后再交给A。之后A和B间的数据流将通过单播在VETP 1和VTEP 2间传输。</p>
+<p>上述为单播的过程，二层的组播过程与之类似，只不过外层的目的IP地址被封装为相应VNI的组播地址。可见，标准VxLAN的转发十分依赖于IP的组播（VxLAN不支持头端复制的伪广播），这对底层的IP网提出了相当的要求。而且将二层的ARP泛洪到底层的IP网上也不是很令人满意，因此目前VxLAN常常与SDN控制器配合——控制器集中地学习VM与VTEP的映射关系，以帮助VxLAN建立隧道，减少了绝大部分在IP网络上的组播。</p>
+<p>一个VxLAN网络连接的主机都在一个网段中，如果租户需要多个网段则需要开通多个VxLAN网络，每个VxLAN网络都有自己的VNI。这些网端间的3层互通依赖于VxLAN GW，VxLAN GW作为网关将终结源主机所在的VxLAN然后进入目的主机的VxLAN。另外VxLAN网关还负责VxLAN与VLAN网络的连接，数据包从VxLAN网络进入VLAN网络时，VxLAN网关去掉VxLAN头并根据VNI标记原始帧中的VLAN，反之同理。</p>
+<p>VxLAN核心的东西就这么多了。值得注意的是，VxLAN不允许VTEP接收IP分片，因此如果ingress VTEP封装隧道后超过了IP Router的MTU就会被分片，Egress VTEP收到分片后将直接丢弃，而VxLAN本身并没有MTU探测机制。</p>
+<p>VxLAN用来建立虚拟机间端到端的隧道，常常被部署在物理服务器的HyperVisor中。考虑到软件性能的=问题，现在也有一些硬件交换机也可以支持VxLAN了。这几年VxLAN基本上已经成为了新一代数据中心技术的代名词，再配合SDN的集中式控制，VxLAN当下当仁不让地扛起了网络虚拟化的大旗。从目前来看，VxLAN在数据中心已经取得了对其他技术的压倒性优势，很多厂商都在担心会被VxLAN锁定，迫切地寻找着其他的替代方案。</p>
+<p>大炮一响，黄金万两，NvGRE和STT相继登场。</p>
+<h2>2) NvGRE</h2>
+<p>NvGRE（Network virtualization GRE，RFC draft）是微软搞出来的数据中心虚拟化技术，是一种MACinGRE隧道。它对传统的GRE报头进行了改造，增加了24位的VSID字段标识租户，而FlowID可用来做ECMP。由于去掉了GRE报头中的Checksum字段，因此NvGRE不支持校验和检验。NvGRE封装以太网帧，外层的报头可以为IPv4也可以为IPv6。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/nvgre.png" /></p>
+<p>NvGRE与VxLAN并没有什么核心的区别。虽然是在VxLAN之后提出的技术，但NvGRE变得更简单了，完全没有规定什么地址学习机制，就是靠NVA来指挥，看来是铁了心站到SDN这一队了。细节上NvGRE与VxLAN还是有一定区别的，比如：不支持与VLAN网络的互通；使用Outer SRC IP+VSID+FlowID做ECMP，不过这要求IP Router的硬件支持；支持头端复制的伪广播；同样不支持IP Router上的分片，但在RFC中探讨了MTU发现机制，等等。</p>
+<p>微软又不是专门做网络的，有必要包装一个Vmware搞一个基本一样的技术吗？有，原因很简单，因为微软的Hyper-V跟Vmware 的vCloud可是死对头，有了VxLAN人家Vmware计算、存储、网络的虚拟化可都齐活儿了，微软要卖Hyper-V，总不可能拿死对头现成的技术过来吧，这样就有了NvGRE。</p>
+<h2>3) STT</h2>
+<p>STT（Stateless Transport Tunnel，RFC draft）是Nicira提出的数据中心虚拟化技术，是一种MACinTCP的隧道。之所以设计STT，是因为希望利用网卡的TSO（TCP Segment Offload）功能在隧道两端进行分片以支持巨型帧的传输，提高端到端的通信效率。Nicira被VMware收购后STT技术也自然易主，被用在NSX中做HyperVisor to HyperVisor的隧道技术。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/stt.png" /></p>
+<p>虽然用到了TCP头，但是STT修改了里面的Seq字段和Ack字段的含义，不再用于重传和滑动窗口，是一种无状态的隧道。准确地说，STT使用的是一种TCP like的包头，只是为了伪装成TCP段来进行TSO。Src Port可用来做ECMP，DST Port为7471（正在向IANA申请）；Ack用来标识STT frame，Seq的upper 16 bits用于标识STT frame的长度，lower 16 bits用于标识current frame的偏移量。STT frame被分片后，各片的Ack和Seq的upper 16 bits均相同，而Seq的lower 16 bits各不相同，隧道出口设备上的网卡用之进行分片重组；TCP Flag和Urgent Pointer都不再具有意义；Version现为0；Flags标识了内层数据的类型与相关信息；L4 Offset标识了STT frame的末位到内层数据Layer 4（TCP/UDP）的偏移量；MSS为最大的分片长度；PCP为传输优先级；VLAN ID用于与VLAN网络互通；Context ID为64位的VN Context。STT的外层的报头可以为IPv4或者IPv6。</p>
+<p>STT也没有规定地址学习机制，同样要配合SDN控制器完成转发。不过相比于NvGRE，STT还算比较有特色，起码首创地支持了分片的机制，不过STT也没有内生的MTU发现机制。另外，STT不支持伪广播；RFC建议支持DSCP和ECN；支持与VLAN网络的互通。</p>
+<p>从某种角度来讲，STT的分片机制能够在一定程度上提高通信的效率，不过STT有一个致命的缺陷——它的TCP是无连接的，不会进行三次握手，也没有状态维护。虽然网卡做TSO时不关心这个问题，但防火墙、负载均衡器这些Middle Box可就不买账了。因此STT在实际部署时受到了很大的限制，在NSX中只被用来做Hyper-Hyper的隧道，想穿越过物理网络还得看VxLAN。STT的RFC也明确地提到了这个问题，希望将来Middle Box能做到STT aware——谈何容易啊！</p>
+<h2>4) Geneve</h2>
+<p>Geneve（Generic Network Virtualization Encapsulation，RFC Draft）是NVo3工作组总结VxLAN、NvGRE和STT提出的一种网络虚拟化技术，希望形成一种通用的封装格式，以便支持数据中心中隧道机制的后续演化。Geneve是今年5月份提出的，目前还处于草案阶段，不过从它的内容来看，确实是博采众长，未来具备相当的潜力。</p>
+<p>Geneve采用了VxLAN的思路，是一种MACinUDP的隧道。之所以没用MACinGRE或者MACinTCP，作者估计是工作组考虑到GRE头部的可扩展性比较差，不具备可演进的能力。而用TCP头的话，如果仍保持TCP的特性，则维护有连接的隧道开销过大，如果像STT一样处理为无状态的，那么又会存在Middle Box的穿越问题。相比之下，UDP头就没有那么多问题，Geneve作为一种应用层协议不存在可扩展性的问题，而UDP本身的无连接特性又不会带来开销和兼容的问题。至于分片，Geneve建议使用Path MTU Discovery(RFC 1191)来探测传输路径上的MTU。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/geneve.png" /></p>
+<p>Geneve封装的是以太网帧，外层的报头可以为IPv4也可以为IPv6。UDP Src Port常通过hash获得，可用于ECMP，Dst Port为IANA分配给Geneve的6081；对于UDP Checksum，Geneve与VxLAN的处理办法相同，并建议使用NIC去Offload；Geneve头部采用了TLV格式，以支持隧道机制的演化，Opt Len为TLV的长度；O位为OAM标识，当O位置1的时候Geneve携带的为控制信令而非Ethernet payload；VNI为24位的VN Context；TLV的具体内容，目前Geneve还在制定草案；对Inner VLAN的处理，Geneve可选地支持VLAN Trunking与VLAN混合组网。</p>
+<p>下面再来谈谈一些Geneve草案中除了封装格式以外的内容，借以简单地分析一下端到端NVo3隧道的演化思路。Geneve希望IP Router可选地支持对Geneve的理解，也就是说希望底层IP Fabric的传输能够考虑到隧道传输的需求，这在NvGRE和STT的草案中也都提到过，换句话说为了保障端到端的传输质量，隧道应该放开一些字段给传输网络去参考，而不是死守着透明的原则不放，其实Outer IP的DSCP和ECN字段就很适合做QoS，预计未来会有专门的机制去在NVE上做映射；Geneve参考了NvGRE的设计，希望可以将VNI作为ECMP的一个参考字段，未来估计TLV中的一些Option也会被用来标识细粒度的业务流，以支持精细化的虚网定制；Geneve可采用头端复制的伪广播，不再要求IP Fabric具备组播的能力，降低要求的同时简化了网管的配置工作；Geneve专门讨论了分片的NIC Offload问题，以降低新增隧道包头对传输性能造成的影响；Geneve也没有规定地址学习机制，说明端到端隧道+SDN已经成为当下业界的共识。</p>
+<p>目前Geneve只提交了一版草案，到今年的11月过期，估计下一版很快就要出来了，让我们拭目以待，看看未来走势如何。</p>
+<p>最后画几张表作为总结吧，方便读者直观地对这几种技术做个对比。</p>
+<table border="2", align="center", text-align:"center">
+  <tr, align="center"><th></th><th>标准化</th><th>隧道类型</th><th>地址学习</th><th>VN Context</th><th>头端复制</th><th>ECMP</th><th>精细化匹配</th></tr>
+  <tr, align="center"><td>VxLAN</td><td>RFC标准，De facto Standard</td><td>MACinUDP</td><td>二层自学习，可结合SDN</td><td>24位VNI</td><td>不支持</td><td>源端口号</td><td>不支持</td></tr>
+  <tr, align="center"><td>NvGRE</td><td>微软提交的草案</td><td>MACinGRE</td><td>结合SDN</td><td>24位VSID</td><td>支持</td><td>Outer IP+VSID+FlowID</td><td>8位FlowID</td></tr>
+  <tr, align="center"><td>STT</td><td>VMware提交的草案</td><td>MACinTCP</td><td>结合SDN</td><td>64位Context ID</td><td>不支持</td><td>源端口号</td><td>不支持</td></tr>
+  <tr, align="center"><td>VxLAN</td><td>IETF工作组形成的草案</td><td>MACinUDP</td><td>结合SDN</td><td>24位VNI</td><td>支持</td><td>源端口号+VNI</td><td>预计通过TLV支持</td></tr>
+</table>
+
+<p><br></p>
+<table border="2", align="center", text-align:"center">
+  <tr, align="center"><th></th><th>分片Offload</th><th>传输质量保障</th><th>OAM</th><th>Middle Box</th><th>IP Router Aware</th><th>网关上的VLAN Trunking</th></tr>
+  <tr, align="center"><td>VxLAN</td><td>不支持</td><td>不支持</td><td>不支持</td><td>兼容</td><td>不支持</td><td>支持</td></tr>
+  <tr, align="center"><td>NvGRE</td><td>不支持</td><td>不支持</td><td>不支持</td><td>基本兼容</td><td>建议支持</td><td>不支持</td></tr>
+  <tr, align="center"><td>STT</td><td>原生支持</td><td>建议支持</td><td>不支持</td><td>不兼容</td><td>建议支持</td><td>支持</td></tr>
+  <tr, align="center"><td>Geneve</td><td>建议支持</td><td>预计支持</td><td>支持</td><td>兼容</td><td>建议支持</td><td>可选支持</td></tr>
+</table></div>
         <hr />
     </div>
 		
@@ -85,7 +128,29 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
 
     <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-7-kong-zhi-yi-xu-duo.html"><h2>原创博客--网络虚拟化的前世、今生与未来(7-控制一虚多)</h2></a>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(9-隧道技术引言)</h2></a>
+        <div class= "well small"> 六 10 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>从铁三角到隧道</h1>
+<p>开始讲解数据平面的虚拟化前，我们首先来看一看数据中心网络典型的网络拓扑。左图3层分别为接入、汇聚和核心层，一般来说，接入层负责制定虚拟机的接入策略，汇聚层负责二层的传输，核心层作为网关负责三层的互通。当然了，如果汇聚层设备能够作为网关，也可以简化为右图的两层拓扑。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E4%BB%8E%E9%93%81%E4%B8%89%E8%A7%92%E5%88%B0%E9%9A%A7%E9%81%93%20%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%84.png" /></p>
+<p>数据中心传统的虚拟化做法是VLAN+xSTP +自学习，VLAN负责隔离，STP负责拓扑整合，自学习负责转发，三者贯穿于传统数据中心的二层网络。不过三者各有各的问题：VLAN虽然简单成熟，但作为虚网的标签可用的只有4094个；自学习要依靠泛洪这种极度浪费资源的行为来在二层探路，而且汇聚/核心层设备MAC地址表压力太大；xSTP更是老大难的问题——收敛慢、规模受限、链路利用率低、配置复杂等等，还要考虑如何与其他二层协议配合设计。虽然有诸多的问题，但传统数据中心毕竟规模有限，倒也对付的过去。</p>
+<p>2006年，亚马逊推出了AWS，开启了公有云的时代，大二层网络的呼声越来越高。面对着越来越多的用户，面对着越来越大的流量压力和被迫闲置的链路带宽，数据中心网络的转型迫在眉睫。虽然结合之前讲过的控制平面虚拟化技术，能够在一定程度上弱化上述问题，不过对于大二层的设计目标来说，底层网络仍然是不够智能、不够灵活的。于是多种多样的隧道技术出现了，逐渐代替了 “VLAN+xSTP ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-7-kong-zhi-yi-xu-duo.html"><h2>原创博客——网络虚拟化的前世、今生与未来(7-控制一虚多)</h2></a>
         <div class= "well small"> 四 08 十月 2015
 
 by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
@@ -122,27 +187,6 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>几台设备搞成一台，好处是很多的。第一，简化了运维，以前几台设备各配各的配置，复杂不说还容易出错，堆叠后管理员配一次就都OK了。第二，高可用性，每台设备里面都有引擎，一台坏了能够自动倒换，也就省去了HSRP这些麻烦事。第三点，也是最重要的是，“虚拟机框 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-8-kong-zhi-duo-xu-yi.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-6-da-er-ceng-jian-jie.html"><h2>原创博客——网络虚拟化的前世、今生与未来(6-大二层简介)</h2></a>
-        <div class= "well small"> 六 03 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>初识大二层</h1>
-<p>刚接触网络的一段时间里，作者经常把数据中心和云等同在一起来看待，以为数据中心就是成群的虚拟机和各种神秘的转发设备，支撑着“按需服务”的商业模型。后来才慢慢意识到，这是两个交织在一起但完全不同的概念。数据中心是把服务器放在一起统一进行管理的技术，属于社会分工的产物。大型的公司通常自建私有的数据中心，而没有足够财力的小公司就只能租用公共数据中心的IT资源。云是数据中心一种高度进化的形态，开启了“按需租用”的商业模式，可以说是IT集约化运营的趋势催生了云计算。云计算数据中心成为了近十年来IT界的弄潮儿，对原有的计算、存储和网络技术产生了深刻的变革。云计算数据中心中，有关计算和存储的技术作者并不熟悉，不过可以说这两方面已经做得相当成熟了，云网络则成了云的短板，在相当程度上制约着云的扩散。</p>
-<p>众所周知，互联网在最初设计的时候，主要是为了能够让分散的用户访问集中的服务器，即所谓的CS模型。在这种模型下，“路由交换”架构一统江湖，其中以“IP+以太网”为霸主——小范围内通过交换机进行本地高速交换，大范围间通过路由器进行IP智能寻址。在云出现以前，“IP+以太网”技术在数通领域基本上已经做到了极致，在长达30年的时间中通杀一切，不说做到了垄断也是八九不离十了。</p>
-<p>但是在云计算的IT模型中，以下几点技术问题对于传统的“IP+以太网”提出了严峻的挑战 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-6-da-er-ceng-jian-jie.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
@@ -150,6 +194,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
     <li class="active"><a href="/author/chen-zhang.html">1</a></li>
     <li class=""><a href="/author/chen-zhang2.html">2</a></li>
     <li class=""><a href="/author/chen-zhang3.html">3</a></li>
+    <li class=""><a href="/author/chen-zhang4.html">4</a></li>
 
     <li class="next"><a href="/author/chen-zhang2.html">Next &rarr;</a></li>
 
