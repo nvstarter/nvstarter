@@ -147,61 +147,13 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>VxLAN（Virtual eXtensible LAN，RFC 7348），是Vmware和Cisco联合提出的一种大二层技术 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-101-nvo3.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(9-隧道技术引言)</h2></a>
-        <div class= "well small"> 六 10 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>从铁三角到隧道</h1>
-<p>开始讲解数据平面的虚拟化前，我们首先来看一看数据中心网络典型的网络拓扑。左图3层分别为接入、汇聚和核心层，一般来说，接入层负责制定虚拟机的接入策略，汇聚层负责二层的传输，核心层作为网关负责三层的互通。当然了，如果汇聚层设备能够作为网关，也可以简化为右图的两层拓扑。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E4%BB%8E%E9%93%81%E4%B8%89%E8%A7%92%E5%88%B0%E9%9A%A7%E9%81%93%20%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%84.png" /></p>
-<p>数据中心传统的虚拟化做法是VLAN+xSTP +自学习，VLAN负责隔离，STP负责拓扑整合，自学习负责转发，三者贯穿于传统数据中心的二层网络。不过三者各有各的问题：VLAN虽然简单成熟，但作为虚网的标签可用的只有4094个；自学习要依靠泛洪这种极度浪费资源的行为来在二层探路，而且汇聚/核心层设备MAC地址表压力太大；xSTP更是老大难的问题——收敛慢、规模受限、链路利用率低、配置复杂等等，还要考虑如何与其他二层协议配合设计。虽然有诸多的问题，但传统数据中心毕竟规模有限，倒也对付的过去。</p>
-<p>2006年，亚马逊推出了AWS，开启了公有云的时代，大二层网络的呼声越来越高。面对着越来越多的用户，面对着越来越大的流量压力和被迫闲置的链路带宽，数据中心网络的转型迫在眉睫。虽然结合之前讲过的控制平面虚拟化技术，能够在一定程度上弱化上述问题，不过对于大二层的设计目标来说，底层网络仍然是不够智能、不够灵活的。于是多种多样的隧道技术出现了，逐渐代替了 “VLAN+xSTP ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-7-kong-zhi-yi-xu-duo.html"><h2>原创博客——网络虚拟化的前世、今生与未来(7-控制一虚多)</h2></a>
-        <div class= "well small"> 四 08 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>控制平面一虚多</h1>
-<p>说完了控制平面多虚一，再来说说控制平面一虚多。我们知道，通过计算资源的一虚多技术，一台物理服务器上可以生成多个虚拟机，它们完全独立的进行工作。如果能够参照计算的一虚多，将一台网络设备的操作系统分为多个操作系统，每个操作系统对应一台虚拟设备，而这些虚拟设备的数据、控制和管理都是完全独立的，网管配置起来可以少费不少脑细胞。而且，多个虚拟设备还能够做备份、迁移什么的，反正只要能虚出来，玩法就有很多了。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E6%8E%A7%E5%88%B6%E4%B8%80%E8%99%9A%E5%A4%9A%20%E7%A4%BA%E6%84%8F.png" /></p>
-<p>Cisco VDC和Huawei VS是上述虚拟化路线的代表技术，上面列表展示了几项主要网络一虚多技术的区别。早期的VRF技术也算是控制平面的一虚多技术，为不同的虚拟网络运行不同的路由进程。不过VRF的一虚多是个半吊子，它只实现了转发的隔离——各个VRF都运行在同一个OS中，设备的计算资源包括CPU和内存还都是抢占的，如果一个虚网的路由进程跑死了，其它虚网也难免要跟着遭殃。下面这两张图是Cisco VDC的胶片，能够直观地说明这一问题。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vdc%E8%83%B6%E7%89%87.png" /></p>
-<h2>1) Cisco VDC</h2>
-<p>VDC（ Virtual Device Contexts）是Cisco基于操作系统级别的一虚多网络虚拟化技术。Cisco在数据中心NxK系列交换机中提供了对VDC的支持，N7000能够支持4个VDC实例（2E引擎支持8个）。每个VDC实例都支持4K个VLAN和256个VRF，从理论上来说所有的逻辑转发资源都相应地扩展了4/8倍。当然，物理资源是不能够随之扩展的，例如每个物理端口只能关联一个VDC实例 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-7-kong-zhi-yi-xu-duo.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
-    <li class="active"><a href="/category/misc.html">1</a></li>
-    <li class=""><a href="/category/misc2.html">2</a></li>
-    <li class=""><a href="/category/misc3.html">3</a></li>
+    <li class="active"><a href="/tag/da-er-ceng.html">1</a></li>
 
-    <li class="next"><a href="/category/misc2.html">Next &rarr;</a></li>
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
 
 </ul>
 </div>

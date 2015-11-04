@@ -58,6 +58,26 @@
  
 
     <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-8-kong-zhi-duo-xu-yi.html"><h2>原创博客——网络虚拟化的前世、今生与未来(8-控制多虚一)</h2></a>
+        <div class= "well small"> 一 05 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>控制平面多虚一</h1>
+<p>控制平面多虚一，指的是将两台或者多台设备的资源（包括操作系统、转发实例、转发表、端口等）进行整合，对外表现为一台逻辑设备，以Cisco VSS，Huawei CSS和H3C的IRF为代表，后来Cisco又推出了vPC技术作为对VSS的升级（虽然vPC已经很难说是控制平面多虚一技术了）。其实在这些技术中，除了转发实例、转发表这些转发逻辑层面的资源以外，端口这些数据平面的资源都被连带着整合了，因此又称“虚拟机框”技术。为了方便起见，以下就称为“虚拟机框”技术了。这类技术和堆叠技术，感觉应该本质上是一回事，不过堆叠设备必须要落在一起，要通过专门的堆叠口、堆叠线进行连接，而“虚拟机框”设备间则可以通过线卡上的端口进行以太网的连接，距离能拉的很远。</p>
+<p>几台设备搞成一台，好处是很多的。第一，简化了运维，以前几台设备各配各的配置，复杂不说还容易出错，堆叠后管理员配一次就都OK了。第二，高可用性，每台设备里面都有引擎，一台坏了能够自动倒换，也就省去了HSRP这些麻烦事。第三点，也是最重要的是，“虚拟机框 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-8-kong-zhi-duo-xu-yi.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-6-da-er-ceng-jian-jie.html"><h2>原创博客——网络虚拟化的前世、今生与未来(6-大二层简介)</h2></a>
         <div class= "well small"> 六 03 十月 2015
 
@@ -115,33 +135,6 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>QinQ（802.1ad，PB，Provider Bridge），VLAN堆栈技术。通过将公网VLAN 标签（S-Tag）封装在用户私网VLAN 标签（C-Tag）前，使报文带着两层VLAN Tag穿越公网。PE负责增加/剥除4个字节的S-Tag，P要求支持802.1q中的Trunk概念，根据用户的MAC地址和S-VLAN在公网进行2层自学习转发。</p>
 <p>PBB（802.1ah，Provider Backbone Bridge），运营商骨干网桥接技术，属于一种MACinMAC的隧道技术，可配合QinQ使用。通过定义双层MAC地址的帧结构，PE将B-MAC和B-Tag封装在CE数据帧前，以P要求支持Trunk概念，根据B-MAC和B-VLAN在公网进行2层自学习转发。</p>
 <p>配一张VLAN，QinQ和PBB的格式图吧，一目了然 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.3-VPN)</h2></a>
-        <div class= "well small"> 五 02 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>远程接入VPN</h1>
-<p>远程接入这种VPN应用形式，常见的业务场景有两种。一种是移动办公人员接入企业私网，另一种是用户希望绕开默认的网络出口以获得完整的访问权限，俗称“翻墙”。大众所熟知的VPN基本上等同于“翻墙”，其实这只是VPN技术的冰山一角。</p>
-<p>相比于站点对站点VPN，远程接入VPN的个人用户数量多而且位置分散。因此，远程接入VPN的技术基本上都是基于隧道的——具有标签性质的技术，大多依赖有限的标签资源和公网的配置，而基于Overlay方式的隧道技术对于公网来说是完全透明的，具备较强的可扩展性和灵活性。</p>
-<p>根据隧道承载的数据业务，远程接入VPN可分为二层隧道，三层隧道和高层隧道。其中二层隧道以L2TP（RFC 2661），三层隧道以IPsec（RFC 4031）VPN，高层隧道以SSL（RFC 6101） VPN为目前的主流技术。下面仍然从网络虚拟化的几个基本设计原则出发，对三种技术进行对比。</p>
-<h2>连通性</h2>
-<p>老规矩，直接上表格。其中Overlay隧道的特征决定了这些技术基本上都是点对点的，L2TP Multihop（RFC 2661）扩展了L2TP点对多点的能力。</p>
-<!--
-VPN技术  | 数据业务|流量类型
-------------- | ------------- |------------
-L2TP  | 二层数据帧 | 点对点/点对多点 ... <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html">read more</a></div>
     </div>	
 				
 <div class="pagination">
