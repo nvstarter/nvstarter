@@ -51,23 +51,17 @@
     <div class="row">
 
         <div class="span9">
-        
-
-        
-
-
     <div class='article'>
         <div class="content-title">
-            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-11-da-er-ceng-ji-zhu-xiao-jie.html"><h1>原创博客——网络虚拟化的前世、今生与未来（11-大二层技术小结）</h1></a>
+            <h1>原创博客——网络虚拟化的前世、今生与未来（11-大二层技术小结）</h1>
 二 17 十一月 2015
 
 by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
 
 
- 
         </div>
-        
+	
         <div><h1>大二层技术小结</h1>
 <p>前面几个小的专题讲了讲大二层的常见技术。可以说，大二层在最近几年引领了一波又一波的网络技术革新，从“VLAN+自学习+xSTP”的铁三角到“虚拟机框”技术再到各式各样的隧道技术，技术发展之快令人咋舌，技术种类之多令人眼花缭乱。对于DC网络的管理者来说，如何进行大二层技术的选型想必是一件非常头疼的事情。在对大二层的技术做过详细的介绍后，本专题将作为一个小结，作者将从实际部署的角度谈一谈大二层的组网，哪里有理解不到的地方敬请指正。</p>
 <p>传统的二层中xSTP扮演着无可替代的作用，不过它对二层的规模和效率有着相当多的限制。为了摆脱这种限制，“虚拟机框”技术通过将多台物理设备整合为一台逻辑设备，跨物理设备冗余的上行链路被看做一个端口组，在转发上统一对待，不仅形成了逻辑上一个天然无环的拓扑，还可以在端口组上做负载分担，基本上解决了STP的困扰。这类技术很早就也得到了广泛的应用，是“大二层”技术中最为成熟的。“虚拟机框”技术有着诸多的优点，但是主要存在着以下两个问题：物理设备间的同步流量远距离或者是跨DC传输很受限制，整合的数量有限，框式一般为2台或者4台；都是私有技术，容易形成厂商锁定。考虑到成本问题，实际部署中这类技术往往用于汇聚/核心层，接入层设备一般不提供支持。</p>
@@ -85,91 +79,23 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E6%9C%AA%E6%9D%A5%E9%9A%A7%E9%81%93%E6%A8%A1%E5%BC%8F.png" /></p>
 <p>作者曾经觉得几种隧道技术接在不同位置，干着不同的活儿，彼此之间应该是互不影响的。不过经过这段时间的学习和思考，作者发现还是大家还是各玩各的好，别搅和在一起。隧道都是二次封装，几种隧道放在一个二层里就是多次封装，不谈技术特性能否完美叠加，光是报头字节的开销和翻来覆去的分片重组，对于性能就是个极大的影响。如果非要把几种技术搞在一起，下图中的部署模式勉强可说的过去，不过VxLAN和TRILL对接的地方如何进行租户的标签映射会是一个问题，至于OTV这类纯DCI隧道最好还是别跟VxLAN和TRILL玩到一块去，没什么多大意思。另外，VDC这类控制平面一虚多技术可是万金油，端口一旦分好了谁也害不着谁，水平整合垂直整合什么的玩好了应该能起到不小的作用。</p>
 <p>实际上，SDN提供的虚拟化能力远不止于此，基于SDN + Overlay的实现方式只是为了兼容现网的设备罢了，至于在纯SDN环境中如何进行虚拟化，等到后面咱们再详细地聊。</p></div>
-        <hr />
+	
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'nvstarter'; 
+    var disqus_title = '原创博客——网络虚拟化的前世、今生与未来（11-大二层技术小结）';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     </div>
-		
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-102-nvo3.html"><h2>原创博客——网络虚拟化的前世、今生与未来（10.2-NVo3）</h2></a>
-        <div class= "well small"> 三 04 十一月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><p>NVo3是L2 over IP/MPLS，利用IP网络的智能传输作为大二层虚拟交换机的背板走线，其好处是利用现有的设备即可完成隧道的传输。不过同时这也带来了一定的问题——IP网络的传输路径、服务质量难以控制，而且往往需要IP网络支持组播。尽管MPLS能解决这一问题，但是其部署过于复杂，开通一个租户的实例动辄要上月的时间，已经难以跟上公有云业务的发展。从NVo3工作组形成Geneve的思路来看，是希望IP Router能够感知到隧道承载的内部L2业务的需求以便提供匹配的传输管道，不过要改造现网的设备可绝非一件容易的事情。这几年以TRILL和SPB为代表的Switch Fabric技术则另起炉灶，走了一条非IP传输的路线，同样满足了大二层所需要的传输智能和可扩展性。</p>
-<h2>1) TRILL</h2>
-<p>TRILL（Transparent Interconnection of Lots of Links，RFC 6325），是一种把三层的链路状态路由技术应用于二层流量传输的协议。TRILL为二层网络添加了基于IS-IS路由协议的控制平面，这种基于路由的寻址方式使得二层网络的转发变得更加智能，同时也使得二层网络摆脱了STP的束缚，获得了高效性和可扩展性。下面来看TRILL的报文格式。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/trill%E6%8A%A5%E6%96%87.png" /></p>
-<p>TRILL的封装在本质上是一种路由封装，它的寻址发生在网络层，因此不妨将TRILL比对着IP路由来看。TRILL设备被称作RB（Routing Bridge），可类比IP路由器。报头中，DA/SA为Egress/Ingress ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-102-nvo3.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-101-nvo3.html"><h2>原创博客——网络虚拟化的前世、今生与未来（10.1-NVo3）</h2></a>
-        <div class= "well small"> 五 16 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>NVo3之——端到端隧道</h1>
-<p>NVo3（Network Virtualization over Layer 3），是IETF 2014年十月份提出的数据中心虚拟化技术框架。NVo3基于IP/MPLS作为传输网，在其上通过隧道连接的方式，构建大规模的二层租户网络。NVo3的技术模型如下所示，PE设备称为NVE（Network Virtualization Element），VN Context作为Tag标识租户网络，P设备即为普通的IP/MPLS路由器。NVo3在设计之初，VxLAN与SDN的联合部署已经成为了数据中心的大趋势，因此NVo3的模型中专门画出了NVA（Network Virtualization Authority）作为NVE设备的控制器负责隧道建立、地址学习等控制逻辑。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/nvo3%20endend%20model.png" /></p>
-<p>NVo3的思想起源于VxLAN，结合NVGRE和STT的发展，目前收敛为Geneve。上述技术都是端到端的隧道，CE为虚拟机或物理服务器，其实单纯地从NVo3的模型角度来看，后面要介绍的OTV/EVN/EVI这些DC间互联的隧道技术都属于NVo3的框架中。本专题将对端到端的NVo3技术进行深入的介绍。</p>
-<h2>1) VxLAN</h2>
-<p>VxLAN（Virtual eXtensible LAN，RFC 7348），是Vmware和Cisco联合提出的一种大二层技术 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-101-nvo3.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(9-隧道技术引言)</h2></a>
-        <div class= "well small"> 六 10 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>从铁三角到隧道</h1>
-<p>开始讲解数据平面的虚拟化前，我们首先来看一看数据中心网络典型的网络拓扑。左图3层分别为接入、汇聚和核心层，一般来说，接入层负责制定虚拟机的接入策略，汇聚层负责二层的传输，核心层作为网关负责三层的互通。当然了，如果汇聚层设备能够作为网关，也可以简化为右图的两层拓扑。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E4%BB%8E%E9%93%81%E4%B8%89%E8%A7%92%E5%88%B0%E9%9A%A7%E9%81%93%20%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%84.png" /></p>
-<p>数据中心传统的虚拟化做法是VLAN+xSTP +自学习，VLAN负责隔离，STP负责拓扑整合，自学习负责转发，三者贯穿于传统数据中心的二层网络。不过三者各有各的问题：VLAN虽然简单成熟，但作为虚网的标签可用的只有4094个；自学习要依靠泛洪这种极度浪费资源的行为来在二层探路，而且汇聚/核心层设备MAC地址表压力太大；xSTP更是老大难的问题——收敛慢、规模受限、链路利用率低、配置复杂等等，还要考虑如何与其他二层协议配合设计。虽然有诸多的问题，但传统数据中心毕竟规模有限，倒也对付的过去。</p>
-<p>2006年，亚马逊推出了AWS，开启了公有云的时代，大二层网络的呼声越来越高。面对着越来越多的用户，面对着越来越大的流量压力和被迫闲置的链路带宽，数据中心网络的转型迫在眉睫。虽然结合之前讲过的控制平面虚拟化技术，能够在一定程度上弱化上述问题，不过对于大二层的设计目标来说，底层网络仍然是不够智能、不够灵活的。于是多种多样的隧道技术出现了，逐渐代替了 “VLAN+xSTP ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html">read more</a></div>
-    </div>	
-				
-<div class="pagination">
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-
-    <li class="active"><a href="/category/misc.html">1</a></li>
-    <li class=""><a href="/category/misc2.html">2</a></li>
-    <li class=""><a href="/category/misc3.html">3</a></li>
-    <li class=""><a href="/category/misc4.html">4</a></li>
-
-    <li class="next"><a href="/category/misc2.html">Next &rarr;</a></li>
-
-</ul>
-</div>
- 
-  
         </div>
         
         <div class="span3">

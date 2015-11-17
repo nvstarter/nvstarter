@@ -58,6 +58,30 @@
  
 
     <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-7-kong-zhi-yi-xu-duo.html"><h2>原创博客——网络虚拟化的前世、今生与未来(7-控制一虚多)</h2></a>
+        <div class= "well small"> 四 08 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>控制平面一虚多</h1>
+<p>说完了控制平面多虚一，再来说说控制平面一虚多。我们知道，通过计算资源的一虚多技术，一台物理服务器上可以生成多个虚拟机，它们完全独立的进行工作。如果能够参照计算的一虚多，将一台网络设备的操作系统分为多个操作系统，每个操作系统对应一台虚拟设备，而这些虚拟设备的数据、控制和管理都是完全独立的，网管配置起来可以少费不少脑细胞。而且，多个虚拟设备还能够做备份、迁移什么的，反正只要能虚出来，玩法就有很多了。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E6%8E%A7%E5%88%B6%E4%B8%80%E8%99%9A%E5%A4%9A%20%E7%A4%BA%E6%84%8F.png" /></p>
+<p>Cisco VDC和Huawei VS是上述虚拟化路线的代表技术，上面列表展示了几项主要网络一虚多技术的区别。早期的VRF技术也算是控制平面的一虚多技术，为不同的虚拟网络运行不同的路由进程。不过VRF的一虚多是个半吊子，它只实现了转发的隔离——各个VRF都运行在同一个OS中，设备的计算资源包括CPU和内存还都是抢占的，如果一个虚网的路由进程跑死了，其它虚网也难免要跟着遭殃。下面这两张图是Cisco VDC的胶片，能够直观地说明这一问题。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vdc%E8%83%B6%E7%89%87.png" /></p>
+<h2>1) Cisco VDC</h2>
+<p>VDC（ Virtual Device Contexts）是Cisco基于操作系统级别的一虚多网络虚拟化技术。Cisco在数据中心NxK系列交换机中提供了对VDC的支持，N7000能够支持4个VDC实例（2E引擎支持8个）。每个VDC实例都支持4K个VLAN和256个VRF，从理论上来说所有的逻辑转发资源都相应地扩展了4/8倍。当然，物理资源是不能够随之扩展的，例如每个物理端口只能关联一个VDC实例 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-7-kong-zhi-yi-xu-duo.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-8-kong-zhi-duo-xu-yi.html"><h2>原创博客——网络虚拟化的前世、今生与未来(8-控制多虚一)</h2></a>
         <div class= "well small"> 一 05 十月 2015
 
@@ -115,28 +139,6 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>VPN的技术可谓五花八门，从这个大类技术的层面上来说，谈不到什么具体的帧格式或者包头，倒是以前面提到的“封装 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.2-VPN)</h2></a>
-        <div class= "well small"> 五 02 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>站点对站点VPN</h1>
-<p>按照业务场景细分，站点对站点VPN还可以再具体分为内联网（Intranet） VPN和外联网（Extranet）VPN。两者的区别主要在前者联的是同一家公司的总部与分支，后者是指公司与外部利益相关群体。不过两者的区别主要是在与一些访问策略和地址规划上的不同，从网络虚拟化的角度来说区别并不大。故此这里的讲解将对两者等同看待，首先简单地介绍一下接下来会涉及到的VPN技术。</p>
-<p>QinQ（802.1ad，PB，Provider Bridge），VLAN堆栈技术。通过将公网VLAN 标签（S-Tag）封装在用户私网VLAN 标签（C-Tag）前，使报文带着两层VLAN Tag穿越公网。PE负责增加/剥除4个字节的S-Tag，P要求支持802.1q中的Trunk概念，根据用户的MAC地址和S-VLAN在公网进行2层自学习转发。</p>
-<p>PBB（802.1ah，Provider Backbone Bridge），运营商骨干网桥接技术，属于一种MACinMAC的隧道技术，可配合QinQ使用。通过定义双层MAC地址的帧结构，PE将B-MAC和B-Tag封装在CE数据帧前，以P要求支持Trunk概念，根据B-MAC和B-VLAN在公网进行2层自学习转发。</p>
-<p>配一张VLAN，QinQ和PBB的格式图吧，一目了然 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev"><a href="/category/misc.html">&larr; Previous</a></li>
@@ -144,6 +146,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
     <li class=""><a href="/category/misc.html">1</a></li>
     <li class="active"><a href="/category/misc2.html">2</a></li>
     <li class=""><a href="/category/misc3.html">3</a></li>
+    <li class=""><a href="/category/misc4.html">4</a></li>
 
     <li class="next"><a href="/category/misc3.html">Next &rarr;</a></li>
 

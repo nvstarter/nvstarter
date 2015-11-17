@@ -58,6 +58,28 @@
  
 
     <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.2-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>站点对站点VPN</h1>
+<p>按照业务场景细分，站点对站点VPN还可以再具体分为内联网（Intranet） VPN和外联网（Extranet）VPN。两者的区别主要在前者联的是同一家公司的总部与分支，后者是指公司与外部利益相关群体。不过两者的区别主要是在与一些访问策略和地址规划上的不同，从网络虚拟化的角度来说区别并不大。故此这里的讲解将对两者等同看待，首先简单地介绍一下接下来会涉及到的VPN技术。</p>
+<p>QinQ（802.1ad，PB，Provider Bridge），VLAN堆栈技术。通过将公网VLAN 标签（S-Tag）封装在用户私网VLAN 标签（C-Tag）前，使报文带着两层VLAN Tag穿越公网。PE负责增加/剥除4个字节的S-Tag，P要求支持802.1q中的Trunk概念，根据用户的MAC地址和S-VLAN在公网进行2层自学习转发。</p>
+<p>PBB（802.1ah，Provider Backbone Bridge），运营商骨干网桥接技术，属于一种MACinMAC的隧道技术，可配合QinQ使用。通过定义双层MAC地址的帧结构，PE将B-MAC和B-Tag封装在CE数据帧前，以P要求支持Trunk概念，根据B-MAC和B-VLAN在公网进行2层自学习转发。</p>
+<p>配一张VLAN，QinQ和PBB的格式图吧，一目了然 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-52-vpn.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-53-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.3-VPN)</h2></a>
         <div class= "well small"> 五 02 十月 2015
 
@@ -121,29 +143,6 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vlan.jpg" /></p>
 <p>TYPE=0x8100，PRI是优先级字段，CFI不怎么常用，以太网中CFI=0。后面12位的VID就是VLAN的标签位，也就是说802.1q中一个局域网中最多有4096个VLAN，不过不同的交换机对VLAN的规划是不同的，用户实际在一台交换机上能用的VLAN数目要比4096少很多。很简单的一个字段吧，没有什么分域，更不能用来寻址，就只是一个标签，不过这对于传统局域网里的网络虚拟化来说就足够了。</p>
 <p>传统局域网中，虚拟化的需求就是不同组织间的隔离 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-3-shu-tong-wang-luo-xu-ni-hua.html"><h2>原创博客——网络虚拟化的前世、今生与未来(3-数通网络虚拟化)</h2></a>
-        <div class= "well small"> 二 29 九月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>数通网络中的虚拟化</h1>
-<p>现有的互联网按照传输设备的不同，可以简单地划分为Packet Domain、Optical Domain和Circuit Domain。Optical Domain和Circuit Domain一般是用来做传输的，而互联网上的路由寻址和一些附加值业务则主要是由Packet Domain设备来实现的。这个系列的专题主要是讲Packet Domain里的网络虚拟化。</p>
-<p>Optical Domain和Circuit Domain是面向连接的，通过物理层的波长、时隙等信道特征可以天然地隔离不同用户的数据业务，并为用户提供不同的服务质量。相比之下，Packet Domain一般需要通过特定的字段来区分用户与用户的数据业务。数通网络中的虚拟化，最精辟的莫过于“封装—寻址”这一通用技术模型，或者说专业一点就是“Routed-Routing” Protocol。这部分内容，网上有很多的资料，作者之前看过一个大牛写的一个数据中心网络的技术专栏，其中对这部分内容的概括非常精炼、理解十分深刻，所以这里直接引用相关内容。</p>
-<p>“
-Routed Protocol和Routing Protocol两个词很好的对技术组成部分进行了分类。这里的Route可以进行广义理解，不要只限于IP，作者倾向于将Routed解释成封装，Routing解释成寻址。任何一段数据信息从起点A发送到终点B的过程中，中间网络做的事情就是封装与寻址两件事。</p>
-<p>由于中间网络只做传输，是不需要了解数据（载荷）信息的 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-3-shu-tong-wang-luo-xu-ni-hua.html">read more</a></div>
     </div>	
 				
 <div class="pagination">
