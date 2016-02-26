@@ -58,6 +58,51 @@
  
 
     <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-101-nvo3.html"><h2>原创博客——网络虚拟化的前世、今生与未来（10.1-NVo3）</h2></a>
+        <div class= "well small"> 五 16 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>NVo3之——端到端隧道</h1>
+<p>NVo3（Network Virtualization over Layer 3），是IETF 2014年十月份提出的数据中心虚拟化技术框架。NVo3基于IP/MPLS作为传输网，在其上通过隧道连接的方式，构建大规模的二层租户网络。NVo3的技术模型如下所示，PE设备称为NVE（Network Virtualization Element），VN Context作为Tag标识租户网络，P设备即为普通的IP/MPLS路由器。NVo3在设计之初，VxLAN与SDN的联合部署已经成为了数据中心的大趋势，因此NVo3的模型中专门画出了NVA（Network Virtualization Authority）作为NVE设备的控制器负责隧道建立、地址学习等控制逻辑。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/nvo3%20endend%20model.png" /></p>
+<p>NVo3的思想起源于VxLAN，结合NVGRE和STT的发展，目前收敛为Geneve。上述技术都是端到端的隧道，CE为虚拟机或物理服务器，其实单纯地从NVo3的模型角度来看，后面要介绍的OTV/EVN/EVI这些DC间互联的隧道技术都属于NVo3的框架中。本专题将对端到端的NVo3技术进行深入的介绍。</p>
+<h2>1) VxLAN</h2>
+<p>VxLAN（Virtual eXtensible LAN，RFC 7348），是Vmware和Cisco联合提出的一种大二层技术 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-101-nvo3.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(9-隧道技术引言)</h2></a>
+        <div class= "well small"> 六 10 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>从铁三角到隧道</h1>
+<p>开始讲解数据平面的虚拟化前，我们首先来看一看数据中心网络典型的网络拓扑。左图3层分别为接入、汇聚和核心层，一般来说，接入层负责制定虚拟机的接入策略，汇聚层负责二层的传输，核心层作为网关负责三层的互通。当然了，如果汇聚层设备能够作为网关，也可以简化为右图的两层拓扑。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E4%BB%8E%E9%93%81%E4%B8%89%E8%A7%92%E5%88%B0%E9%9A%A7%E9%81%93%20%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%84.png" /></p>
+<p>数据中心传统的虚拟化做法是VLAN+xSTP +自学习，VLAN负责隔离，STP负责拓扑整合，自学习负责转发，三者贯穿于传统数据中心的二层网络。不过三者各有各的问题：VLAN虽然简单成熟，但作为虚网的标签可用的只有4094个；自学习要依靠泛洪这种极度浪费资源的行为来在二层探路，而且汇聚/核心层设备MAC地址表压力太大；xSTP更是老大难的问题——收敛慢、规模受限、链路利用率低、配置复杂等等，还要考虑如何与其他二层协议配合设计。虽然有诸多的问题，但传统数据中心毕竟规模有限，倒也对付的过去。</p>
+<p>2006年，亚马逊推出了AWS，开启了公有云的时代，大二层网络的呼声越来越高。面对着越来越多的用户，面对着越来越大的流量压力和被迫闲置的链路带宽，数据中心网络的转型迫在眉睫。虽然结合之前讲过的控制平面虚拟化技术，能够在一定程度上弱化上述问题，不过对于大二层的设计目标来说，底层网络仍然是不够智能、不够灵活的。于是多种多样的隧道技术出现了，逐渐代替了 “VLAN+xSTP ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-7-kong-zhi-yi-xu-duo.html"><h2>原创博客——网络虚拟化的前世、今生与未来(7-控制一虚多)</h2></a>
         <div class= "well small"> 四 08 十月 2015
 
@@ -95,50 +140,6 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>几台设备搞成一台，好处是很多的。第一，简化了运维，以前几台设备各配各的配置，复杂不说还容易出错，堆叠后管理员配一次就都OK了。第二，高可用性，每台设备里面都有引擎，一台坏了能够自动倒换，也就省去了HSRP这些麻烦事。第三点，也是最重要的是，“虚拟机框 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-8-kong-zhi-duo-xu-yi.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-6-da-er-ceng-jian-jie.html"><h2>原创博客——网络虚拟化的前世、今生与未来(6-大二层简介)</h2></a>
-        <div class= "well small"> 六 03 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>初识大二层</h1>
-<p>刚接触网络的一段时间里，作者经常把数据中心和云等同在一起来看待，以为数据中心就是成群的虚拟机和各种神秘的转发设备，支撑着“按需服务”的商业模型。后来才慢慢意识到，这是两个交织在一起但完全不同的概念。数据中心是把服务器放在一起统一进行管理的技术，属于社会分工的产物。大型的公司通常自建私有的数据中心，而没有足够财力的小公司就只能租用公共数据中心的IT资源。云是数据中心一种高度进化的形态，开启了“按需租用”的商业模式，可以说是IT集约化运营的趋势催生了云计算。云计算数据中心成为了近十年来IT界的弄潮儿，对原有的计算、存储和网络技术产生了深刻的变革。云计算数据中心中，有关计算和存储的技术作者并不熟悉，不过可以说这两方面已经做得相当成熟了，云网络则成了云的短板，在相当程度上制约着云的扩散。</p>
-<p>众所周知，互联网在最初设计的时候，主要是为了能够让分散的用户访问集中的服务器，即所谓的CS模型。在这种模型下，“路由交换”架构一统江湖，其中以“IP+以太网”为霸主——小范围内通过交换机进行本地高速交换，大范围间通过路由器进行IP智能寻址。在云出现以前，“IP+以太网”技术在数通领域基本上已经做到了极致，在长达30年的时间中通杀一切，不说做到了垄断也是八九不离十了。</p>
-<p>但是在云计算的IT模型中，以下几点技术问题对于传统的“IP+以太网”提出了严峻的挑战 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-6-da-er-ceng-jian-jie.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.1-VPN)</h2></a>
-        <div class= "well small"> 五 02 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>VPN--概述</h1>
-<p>书接上文，说完了VLAN，该VPN隆重登场了。相比于VLAN这种简单的局域网技术，VPN可是要复杂的多。VPN并不是一种协议或者标准，而是一类技术的统称，或者更准确地说，是用户跨越广域网进行私有网络互联这样一种业务形态。</p>
-<p>早期租用DDN专线或者通过ISDN拨号来实现私有网络互联是可行的，缺点是站点间的带宽是固定的，所用电路资源是独占的，不够灵活而且费用昂贵。之后，出现了ATM/FR/IP这类基于分组的广域网技术，克服了由资源独占引发的问题，VPN的概念也不过由于ATM/FR因为种种原因最后败给了IP，因此现在的VPN技术基本上都是基于IP的VPN了（MPLS也算是IP的一个变种）。当然，有实力的话可以自建光纤进行互联，不过可能也只有像Google这种级别的公司才玩得转。这个小节我们主要来讲一讲基于IP的VPN，如不特殊说明，以下简称IP VPN为VPN。</p>
-<p>这段历史告诉我们，VPN并不是网络大牛们一时兴起，心血来潮搞的技术花花肠子，而是因为这是实打实的需求，是巨大的市场，是兵家必争的利益至高点。这十几年来，VPN为运营商带来了不可估量的效益，几乎靠一己之力支撑着运营商的Internet对公业务。如果说VLAN是网络虚拟化的鼻祖，那么VPN则真正把网络虚拟化作为一个领域推广开来了。</p>
-<p>之所以说VPN是网络虚拟化的技术，从业务形态上来看就一清二楚了，过多的解释反而会显得多余，这里作者就不再画蛇添足了。</p>
-<p>VPN的技术可谓五花八门，从这个大类技术的层面上来说，谈不到什么具体的帧格式或者包头，倒是以前面提到的“封装 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-51-vpn.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev"><a href="/author/chen-zhang.html">&larr; Previous</a></li>
@@ -147,6 +148,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
     <li class="active"><a href="/author/chen-zhang2.html">2</a></li>
     <li class=""><a href="/author/chen-zhang3.html">3</a></li>
     <li class=""><a href="/author/chen-zhang4.html">4</a></li>
+    <li class=""><a href="/author/chen-zhang5.html">5</a></li>
 
     <li class="next"><a href="/author/chen-zhang3.html">Next &rarr;</a></li>
 
@@ -218,7 +220,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2016</p>
 </footer>
 
 </div> <!-- /container -->

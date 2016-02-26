@@ -58,6 +58,51 @@
  
 
     <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.4-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>其它VPN分类</h1>
+<p>除了根据应用形式来对VPN技术进行分类，还有很多其它的分类方式，下面列出其中常见的几种分类，以便读者对VPN技术有更多维度的认识。</p>
+<p>用Markdown编辑表格实在是费劲，直接截图了～</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/VPN%20%E5%88%86%E7%B1%BB.png" /></p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(4-VLAN)</h2></a>
+        <div class= "well small"> 四 01 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>VLAN</h1>
+<p>首先，我们来看看传统网络里的网络虚拟化，这一个小专题来讲一讲VLAN。</p>
+<p>VLAN（Virtual LAN，虚拟局域网），是一个局域网的虚拟化技术，官方文件参考IEEE 802.1q。对于做网络的人来说，谈起它简直是如数家珍。VLAN可以说是网络虚拟化领域的老祖宗，可别看这个技术年头已经很久了，它的活力可不减当年——做VPN有QinQ，做策略有PVLAN，做融合有FCOE，做VPC有AWS的EC2等等，可以说由VLAN衍生出来的标签技术的应用在数通领域历久弥新，而基本上所有的以太网技术在设计或优化的时候都无法忽略VLAN的存在。这里纠正一个初学VLAN常见的概念性错误——虽然以太网在市场上已经成为了局域网的代名词，但是局域网不能和以太网划等号，VLAN是一种局域网技术，不是单纯为以太网设计的。</p>
+<p>按照惯例，先来看看802.1q中VLAN的帧格式吧，虽然都是老生常谈了。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vlan.jpg" /></p>
+<p>TYPE=0x8100，PRI是优先级字段，CFI不怎么常用，以太网中CFI=0。后面12位的VID就是VLAN的标签位，也就是说802.1q中一个局域网中最多有4096个VLAN，不过不同的交换机对VLAN的规划是不同的，用户实际在一台交换机上能用的VLAN数目要比4096少很多。很简单的一个字段吧，没有什么分域，更不能用来寻址，就只是一个标签，不过这对于传统局域网里的网络虚拟化来说就足够了。</p>
+<p>传统局域网中，虚拟化的需求就是不同组织间的隔离 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-3-shu-tong-wang-luo-xu-ni-hua.html"><h2>原创博客——网络虚拟化的前世、今生与未来(3-数通网络虚拟化)</h2></a>
         <div class= "well small"> 二 29 九月 2015
 
@@ -96,27 +141,6 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>从客观上来讲，是云计算的发展将网络虚拟化推到了技术的前沿。不过，网络虚拟化却不只是云的独家需求。铁塔的挂牌意味着将来三大运营商的设备都要收归国有，虚拟运营商可能真的不只是停留在概念上了。这些实实在在的国有资产要在虚拟运营商间分配 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-1-qian-yan.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-2-nvgai-nian-yu-mo-xing.html"><h2>原创博客——网络虚拟化的前世、今生与未来(2-NV概念与模型)</h2></a>
-        <div class= "well small"> 一 28 九月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>网络虚拟化的概念与模型</h1>
-<p>网络虚拟化由来已久，普遍认为最初的网络虚拟化起源于VLAN。我们知道以太网是通过广播进行自学习的，这在相对复杂的环境中会出现一些问题，比如公司的财务部门的数据经过广播可能会传播到外来人员接入的主机上，显然这是不能被接受的，VLAN的出现主要就是为了解决这一问题。VLAN（802.1Q）是一个局域网中的虚拟化技术，通过将一个局域网的广播域隔离为多个广播域，实现一个站点内不同的部门间的隔离。随着互联网的普及，又衍生出了多个站点间跨越Internet进行通信的需求，比如公司总部在北京，另外在上海有一个分部，每天分部的财务部门的数据都需要同步到总部去，显然这些数据是不允许暴露在公网上的。于是五花八门的VPN类技术出现了，极大地推动了网络虚拟化的发展。</p>
-<p>确切的说，网络虚拟化不是一类技术，而是一种用户使用网络的需求——用户总是希望能在内部进行任意的通信，而不希望被其他人所知。而随着需求的改变，技术本身是在不断地进化和迭代的。有了VLAN做隔离后，人们还希望能在一个二层内进行隔离，因此就出现了PVLAN；有了VPWS实现两个站点间的点对点互联，人们还希望通过点对多点进行多个站点间的互联，于是就出现了VPLS。诸如此类，不胜枚举。</p>
-<p>网络虚拟化也分为“一虚多”和“多虚一”两种基本模型。“一虚多”模型就是将一个物理/逻辑网络元素分解成多个逻辑网络元素，这里的网络元素可以是设备级别的，也可以指链路、拓扑等等。网络离不开控制和数据转发，控制负责软件的逻辑 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-2-nvgai-nian-yu-mo-xing.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev"><a href="/index3.html">&larr; Previous</a></li>
@@ -125,8 +149,9 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
     <li class=""><a href="/index2.html">2</a></li>
     <li class=""><a href="/index3.html">3</a></li>
     <li class="active"><a href="/index4.html">4</a></li>
+    <li class=""><a href="/index5.html">5</a></li>
 
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+    <li class="next"><a href="/index5.html">Next &rarr;</a></li>
 
 </ul>
 </div>
@@ -196,7 +221,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2016</p>
 </footer>
 
 </div> <!-- /container -->

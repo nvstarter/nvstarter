@@ -58,8 +58,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-11-da-er-ceng-ji-zhu-xiao-jie.html"><h1>原创博客——网络虚拟化的前世、今生与未来（11-大二层技术小结）</h1></a>
-二 17 十一月 2015
+            <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-13-xin-san-wang-rong-he-ji-suan-cun-chu-yu-wang-luo.html"><h1>原创博客——网络虚拟化的前世、今生与未来（13-新三网融合--计算存储与网络）</h1></a>
+五 26 二月 2016
 
 by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
@@ -68,25 +68,77 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
  
         </div>
         
-        <div><h1>大二层技术小结</h1>
-<p>前面几个小的专题讲了讲大二层的常见技术。可以说，大二层在最近几年引领了一波又一波的网络技术革新，从“VLAN+自学习+xSTP”的铁三角到“虚拟机框”技术再到各式各样的隧道技术，技术发展之快令人咋舌，技术种类之多令人眼花缭乱。对于DC网络的管理者来说，如何进行大二层技术的选型想必是一件非常头疼的事情。在对大二层的技术做过详细的介绍后，本专题将作为一个小结，作者将从实际部署的角度谈一谈大二层的组网，哪里有理解不到的地方敬请指正。</p>
-<p>传统的二层中xSTP扮演着无可替代的作用，不过它对二层的规模和效率有着相当多的限制。为了摆脱这种限制，“虚拟机框”技术通过将多台物理设备整合为一台逻辑设备，跨物理设备冗余的上行链路被看做一个端口组，在转发上统一对待，不仅形成了逻辑上一个天然无环的拓扑，还可以在端口组上做负载分担，基本上解决了STP的困扰。这类技术很早就也得到了广泛的应用，是“大二层”技术中最为成熟的。“虚拟机框”技术有着诸多的优点，但是主要存在着以下两个问题：物理设备间的同步流量远距离或者是跨DC传输很受限制，整合的数量有限，框式一般为2台或者4台；都是私有技术，容易形成厂商锁定。考虑到成本问题，实际部署中这类技术往往用于汇聚/核心层，接入层设备一般不提供支持。</p>
-<p>与“虚拟机框”这类控制平面虚拟化不同，隧道技术属于数据平面的虚拟化。隧道技术过对二层帧进行再封装，把底层网络当做是“大二层交换机”的背板走线，底层网络可达之处便是二层网络可及之处，在组网的物理位置上提供了几乎无限的可扩展性。隧道技术种类多种多样，从技术发展和市场趋势来看，数据中心隧道的部署历经四代，逐步朝着“隧道下沉”的趋势演进。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E7%AC%AC%E4%B8%80%E4%BB%A3%E9%9A%A7%E9%81%93.png" /></p>
-<p>第一代隧道部署位于数据中心间的互联，部署在数据中心核心层出口PE上，实际上就是VPN技术的应用。为了实现跨DC的二层网络，往往使用L2 VPN，以VPLS作为代表技术。隧道终结于DC边缘，DC内部为纯二层环境，通过STP组网，或者使用堆叠/虚拟机框技术。第一代隧道技术，应用部署非常成熟，其问题在于：内部仍为VLAN组网，收到租户数量上的限制；VPLS技术开通复杂，可扩展性差，没有针对DC间流量的优化。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E7%AC%AC%E4%BA%8C%E4%BB%A3%E9%9A%A7%E9%81%93.png" /></p>
-<p>第二代隧道部署，表现在DC间互联隧道从核心层下移到汇聚层，以OTV为代表。针对第一代中VPLS类技术的缺陷进行了优化，主要包括ARP代理，未知流量抑制，出/入向流量路径优化，多宿主双活等等。数据中心内部仍使用STP/堆叠/虚拟机框+VLAN组网。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E7%AC%AC%E4%B8%89%E4%BB%A3%E9%9A%A7%E9%81%93.png" /></p>
-<p>第三代隧道部署，表现在数据中心内部通过隧道优化二层传输，代表技术为TRILL/SPB，部署在接入/汇聚交换机上。相比于堆叠/虚拟机框，TRILL/SPB具有更好的选路智能，二层可扩展性显著提高，不过可能需要代替掉数据中心原有的交换设备。这种部署下，DCI设备模拟的是TRILL/SPB域中连接不同DC中边缘RB/BCB的二层点对多点互联，它能看到的MAC地址是RB/BCB的MAC地址，由于两者都使用了二层的控制协议进行地址学习而非传统的二层自学习，设备的行为也与传统以太网设备有所区别，因此OTV/EVN这类技术将难以发挥自身的特性。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E7%AC%AC%E5%9B%9B%E4%BB%A3%E9%9A%A7%E9%81%93.png" /></p>
-<p>第四代隧道部署中，隧道设备将与虚拟机直连，部署在物理接入交换机上甚至服务器内部的HyperVisor中，形成二层端到端的隧道，代表技术为VxLAN。这类技术在接入设备上打隧道，将IP的智能用于传输，可扩展性无限。同时这种部署对传输设备透明，对现网的改造最小甚至能够做到零改造，而且基于应用层的封装也能任意地进行语意的扩展。不过，在获得利用现有设备便利的同时，也意味着传输网络上的选路智能难以做到像TRILL/SPB一样的控制。这种部署方式中，尽管端到端的隧道理论上能够直接跨越公网实现DCI，但这要求DC中传输设备都有公网的IP，否则在DC出口难免还要再次进行地址学习和封装。</p>
-<p>上述几种隧道技术接在不同位置，干着不同的活儿，彼此之间直觉上来说应该是互不影响的，不过思来想去目前得出结论如下：VxLAN和TRILL都是端接隧道，放在一起没有必要；TRILL必须要结合DCI设备才能跨DC组网，DCI设备模拟不同DC中边缘RB间的二层点对多点互联，它能看到的MAC地址是RB的MAC地址而非虚拟机MAC地址，因此OTV这类技术将难以发挥自身的特性；VxLAN理论上倒是能够直接跨越公网实现DCI，但这要求DC中传输设备都有公网的IP，否则在DC出口难免还要进行类似于OTV的地址学习和封装。另外隧道本身就是二次封装，几种隧道放在一个二层里就是多次封装，不谈技术特性能否完美叠加，光是报头字节的开销和翻来覆去的分片重组，对于性能就是个极大的影响。</p>
-<p>目前来看，第一代的部署方式相对陈旧，基本已经为后续方式所代替。后面的三代技术，以第二代OTV+VSS组网方式最为成熟，运维经验非常丰富。随着东西向流量的爆发式增长，数据中心业务对于二层网络的选路智能提出了迫切的需求，TRILL/SPB在5年前兴起，带动了数据中心网络的变革。而VxLAN爆发是近两年的事情，其背后是SDN持续火热和OpenStack风靡全球。OpenStack的业务编排加上SDN的灵活控制加上VxLAN的数据封装，这股潮流迅速扫荡云数据中心，IETF专门为之成立了NVo3工作组做着相关的标准化工作。</p>
-<p>相比之下TRILL/SPB一来需要设备的升级，二来无法结合SDN的灵活控制，三来无法进行软件实现，缺乏与HyperVisor的集成能力，因此近年来不禁则黯然失色。TRILL也在尝试着转型，FGL的提出为TRILL提供了与VxLAN相当的租户支撑能力，这意味着TRILL不再只是一种数据平面多虚一的技术，还提供了满足多租户需求的一虚多能力。但是无论如何，目前来说VxLAN+IP向SDN平滑演进的思路显然是更受欢迎的。</p>
-<p>实际上，SDN提供的虚拟化能力远不止于此，基于SDN + Overlay的实现方式只是为了兼容现网的设备罢了，至于在纯SDN环境中如何进行虚拟化，等到后面咱们再详细地聊。</p></div>
+        <div><p>网络转发设备用于传输流量，不同类型的流量对网络的需求是不同的。数据中心中有三大类资源，计算、存储和网络，之前讲过的数据网络都是用来传输用户到用户的应用流量的，这类流量对于网络的容忍度比较高，丢包多一点、时延高一点或者抖动大一点都没什么关系，以太网+TCP/IP的协议栈基本上统治了数通网络领域，而这套协议栈用于存储资源间或者是计算资源间的通信却很不合适。存储业务对于丢包几乎是零容忍的（想想你存了一大笔钱，然而在银行数据库写存储时，账户上的数字少了个0会是个多大的灾难），而以太网和IP都是尽力而为的，传输控制需要依靠高层的TCP去做，这种端到端的重传和流控显然不能满足存储对丢包率的要求。同样，一些高性能计算（HPC，High Performance Computing）的业务对于时延几乎零容忍（如高频交易，导弹轨迹拟合等等），要求底层网络能够达到总线级的传输性能，因此尽力而为的以太网和IP同样难以支撑HPC流量的传输。</p>
+<p>因此，数据中心中往往需要为计算、存储的流量专门布网，跑着特定的独立于以太网+TCP/IP的协议栈。对于HPC流量，通常使用IB网络（Infinite Band，无限带宽网络）进行高带宽、低时延的传输，对于存储流量，则通常使用FC网络（Fibre Channel，光纤通道网络）进行高带宽、无丢包的传输。下图给出了数据中心中业务网络组网的简化模型。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/dc%20ibfc%E7%BB%84%E7%BD%91.png" /></p>
+<p>三张独立的网络往往意味着远超3倍的CAPEX/OPEX，整合势在必行。而三种网络的协议栈不同，要实现整合必须使用一个通用的承载协议。由于部署的广泛性的和丰富的整合经验（PPPOE，FRoE，IPoE），以太网成为了承载协议的理想选择。随着DCB（Data Center Bridge，802.1）协议集的发展，以太网的特性得到了相当的扩充—PFC（Priority Flow Control，802.1Qbb）提供了基于通道的无丢包机制，ETS（Enhanced Transmission Selection，802.1Qaz）提供了灵活的带宽调度机制，CN（Congestion Notification，802.1Qau）提供了路径拥塞通知机制。具备这些优良的特性，通过以太网来整合数据、存储网络已经成为了业界的普遍共识。至于IBoE（貌似还有人提过EoIB），目前还很不成熟，虽然很早美国就有人提请过专利（US8165138），不过相关产品和宣传都很少，作者对IB不是很了解，有兴趣的读者可以找一找这篇专利看一下。</p>
+<p>这个专题我们就来讲一讲FCoE（Fibre Channel over Ethernet，ANSI T11），其演化思路是先整合接入层，再改造汇聚/核心层，以做到端到端的数据、存储整合，如下图所示。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/fcoe%E6%BC%94%E8%BF%9B.png" /></p>
+<h2>1) FCoE</h2>
+<p>要了解FCoE，得先来看看FC长什么样子。FC是一套完整的协议栈，有着自己的物理层规范FC-0和FC-1。向上的FC-2P负责帧封装，并通过Buffer-to-Buffer Credit这种可靠传输机制来实现链路层面上的无丢包，功能上类似于TCP滑动窗口。存储节点通过HBA网卡支持FC，其中的FC端口被称为VN_port，每个VN_port都有一个24位的FC-3层地址FCID。FC中不需要进行链路层寻址，通信节点将以FCID作为源/目的地址，FC Switch间交互FSPF（Fibre Channel Shortest Path First，光纤通道最短路径优先）形成转发表，根据目的FCID进行寻址，所以说FC Switch在本质上是一台路由设备。FC-2M夹在FC-2P和FC-3两层之间，负责多个FCID地址的复用。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/fc%20layer.png" /></p>
+<p>每个FC结点都有64位的WWN（Wold Wide Name），结点上的每个端口都有64位的WWPN（World Wide Port Name），对FC网络中的元素进行全球唯一的标识，相当于以太网中的MAC地址，只不过FC Switch并不用它来进行寻址。FC结点使用周知的FCID地址FFFFFE向Login Sever发送 FLOGI（Fabric Login，交换网登录）消息以自动获取FCID，这一过程类似于IP中的DHCP。FC获得FCID后要向地址为FFFFFC的Name Server发送PLOGI（Port Login，端口登录）消息，Name Server记录下WWN/WWPN和FCID的映射关系后回复确认消息。此时通信还不能直接开始，类似于TCP握手，源FC还需要通过PLOGI消息与对端进行FC-4层的协商，协商过后应用层才能开始进行通信。FC中也有类似于IP中DNS的名字解析机制，结点/端口命名可以使用基于字符串的Symbolic Port Name，Name Server中会记录Symbolic Port Name与FCID的映射关系，其他端口可以向Name Server查询已登录的端口信息。上述交互过程如下图所示。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/fc%20login.png" /></p>
+<p>可见，FC的通信过程与IP还是有着很多类似的机制的，最主要的区别是FC只使用FCID进行寻址，结点/端口标识WWN/WWPN并不出现在通信的数据帧中，这里的原因也很简单——64位的WWN/WWPN太长了，会影响FC的转发效率。将FC整合到以太网中，做法是使用Ethernet的帧头去代替FC-2，保留上层的FC-3和FC-4，FCOE协议栈和数据封装如下所示。这里提一句，FCoE将服务器的FC结点称为ENode，FCoE交换机称为FCF。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/fc%20frame.png" /></p>
+<p>FCoE网络中，服务器通过一块CNA网卡同时支撑IP和FC-3两套协议，相当于HBA和Ethernet NIC的合体。FCoE的以太网类型是0x8906，其外层MAC地址的写法比较讲究，后续通过具体的通信流程进行介绍。外层的VLAN对于FCoE来说同样非常关键，其原因主要有二：首先，FCoE流量必须在无损无丢包的以太网链路上进行传输，这完全依赖于PFC和ETS机制，而这两种机制都需要根据VLAN标签来对流量进行分类，因此FCoE流量必须承载在特定的VLAN中；其次，FCF要实现存储网络内部的虚拟化，需要使用不同的VLAN来承载不同VSAN（Virtual Storage Area Network）的流量。那么外层以太网封装时具体该使用哪个VLAN呢？这就要看FCoE的控制平面了。</p>
+<p>FCoE使用FIP（FCoE Initialization Protocol）作为控制平面协议，其以太网类型为0x8914。FIP主要负责以下三个工作：
+VLAN发现。FIP在Native VLAN中通过VLAN发现报文与邻居协商后续FIP信令和FCoE流量所使用的VLAN，其缺省值为1002。
+FCF发现。FCF在所有FCoE VLAN内定期组播发现通告报文，使得当前VLAN内的所有的ENode发现自己。
+FLOGI/PLOGI。与FC中相应过程一样，FCF作为Login Server为ENode分配FCID，同时作为Name Server记录ENode的登录信息。</p>
+<p>经过上述三个阶段后，FCoE网络的初始化工作就完成了，FCoE流量得以无损地在以太网中传输。下面来看一个多跳FCoE网络中典型的报文转发流程。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/fc%20forward.png" /></p>
+<p>由于FCF本质上是一台路由设备，因此FCoE报文经过FCF转发时FCID不变，而外层的MAC地址会逐跳地改写。我们知道IP和MAC是通过ARP协议联系在一起的，那么FCID和MAC该如何映射呢？FCoE为ENode规定了如下的映射方法：使用FC-MAP填充MAC地址的高24位，低24位填充为FCID，得到FPMA作为自己的以太网地址，而弃用CAN网卡出厂时的MAC地址。其中FC-MAP为FIP的FCF发现阶段中，FCF告诉ENode的信息，每个VSAN内部的ENode都使用相同的FC-MAP，不同的VSAN使用不同的FC-MAP。而对于FCF来说，不进行这种转换，直接使用本机MAC地址FCF-MAC进行外层以太网封装。同一个VSAN内的报文都在同一个VLAN内传输，FCF进行per VLAN的MAC地址学习，保证了VSAN间的隔离，不同VLAN的优先级不同，通过PFC和ETS进行差异化的传输控制。</p>
+<p>单跳FCoE的转发更为简单一点，负责接入的FCF收到FCoE流量后，根据FCID进行寻址，然后直接转换成FC-2的帧格式在FC网络中进行传输，这里就不再画图说明了。</p>
+<p>有一个问题就是，当服务器中部署虚拟机的时候，FCF不再是FCoE接入网络的第一跳，很多FIP的交互过程就实现不了，而FC网络也面临着这个问题。FC网络给出的解决办法是NPIV/NPV，NPIV部署在服务器中作为ENode和FCF之间的代理，为下挂的多个虚拟机ENode完成FLOGI/PLOGI过程，而NPV则将NPIV的功能放到了以太网交换机上。NPIV/NPV的示意图如下所示。同样地，FCoE也可以配合NPIV工作实现虚拟机的FCoE接入。Cisco 5k已经对FCoE提供了支持，但作者不清楚VN-TAG网卡跟NPIV是否已经做了集成，如果答案是确定的，那么VN-TAG相比于VEPA的优势可就不是一点半点了。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/npiv.png" /></p>
+<p>相比于之前讲到的其他技术领域，FCoE在数据中心IO整合这块基本上是一枝独秀，没有看到其它类似的有竞争力的技术，包括Cisco、Juniper、Broadcom、Huawei和H3C等都已经支持了FCoE，厂家们罕见的站在了同一个队伍中。可以说，FCoE的生态布局已经完成，未来几年应该也不会有谁能够撼动它的位子，FCoE今后的步子会越迈越大，以太网可能对FC网络实现全面的收编。</p></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-12-xu-ni-ji-jie-ru.html"><h2>原创博客——网络虚拟化的前世、今生与未来（12-虚拟机接入）</h2></a>
+        <div class= "well small"> 四 25 二月 2016
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>云计算（严格说是IaaS）的核心诉求就是向用户提供虚拟机。为了尽可能地提高CPU、内存的利用率，一台物理服务器中往往支撑着数十台甚至上百台虚拟机。接入是虚拟机联网的第一跳，接入做不好，什么大二层这些说法都是白扯。于是，虚拟机的接入成为了云网络变革中的头等大事。</p>
+<h2>1) VEB</h2>
+<p>传统接入网络中，一台主机通过一块物理网卡加上一条网线连接到接入交换机的一个物理端口上（不考虑网卡绑定）。可是面对庞大的虚拟机军团，传统的接入网络可傻了眼。物理服务器上的那几块网卡可哪够这些虚拟机分啊，另外网络的布线，交换机的端口密度也都难以满足大规模的虚拟机接入。</p>
+<p>硬件的资源矛盾难以调和，那么解决这一问题自然而然的思路就是将接入网络的位置下移，延伸到物理服务器中。这种思路自虚拟化诞生的那一天起就有了，做法就是在HyperVisor中加一个软交换模块VEB（Virtual Ethernet Bridge），通过虚拟端口关联虚拟机，用于虚拟机的接入和本地交换，通过一块物理网卡上联物理交换机（不考虑网卡绑定），如果通信目标不在本地就交给上游的物理交换机。上游的交换机也全然意识不到它是个软件交换机，一切都跟传统以太网没什么两样。</p>
+<p>VEB在技术上没什么难点，商用如Vmware的VDS和Cisco的Nexus 1000V，开源如Linux Bridge和Open vSwitch，产品已经十分成熟。如果单纯从功能实现的角度来看，软件交换机的功能可以比物理交换机更为强大，升级起来也灵活的多，比如VxLAN这种延伸到服务器中的端到端隧道就能够很好地与VEB配合着做接入。可是由于软件交换机毕竟是通过CPU和通用内存来做交换的逻辑，其性能自然与基于ASIC的物理交换机有着巨大的差距。当然 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-12-xu-ni-ji-jie-ru.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-11-da-er-ceng-ji-zhu-xiao-jie.html"><h2>原创博客——网络虚拟化的前世、今生与未来（11-大二层技术小结）</h2></a>
+        <div class= "well small"> 二 17 十一月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>大二层技术小结</h1>
+<p>前面几个小的专题讲了讲大二层的常见技术。可以说，大二层在最近几年引领了一波又一波的网络技术革新，从“VLAN+自学习+xSTP”的铁三角到“虚拟机框”技术再到各式各样的隧道技术，技术发展之快令人咋舌，技术种类之多令人眼花缭乱。对于DC网络的管理者来说，如何进行大二层技术的选型想必是一件非常头疼的事情。在对大二层的技术做过详细的介绍后，本专题将作为一个小结，作者将从实际部署的角度谈一谈大二层的组网，哪里有理解不到的地方敬请指正。</p>
+<p>传统的二层中xSTP扮演着无可替代的作用，不过它对二层的规模和效率有着相当多的限制。为了摆脱这种限制，“虚拟机框”技术通过将多台物理设备整合为一台逻辑设备，跨物理设备冗余的上行链路被看做一个端口组，在转发上统一对待，不仅形成了逻辑上一个天然无环的拓扑，还可以在端口组上做负载分担，基本上解决了STP的困扰。这类技术很早就也得到了广泛的应用，是“大二层”技术中最为成熟的。“虚拟机框”技术有着诸多的优点，但是主要存在着以下两个问题：物理设备间的同步流量远距离或者是跨DC传输很受限制，整合的数量有限，框式一般为2台或者4台；都是私有技术，容易形成厂商锁定。考虑到成本问题，实际部署中这类技术往往用于汇聚/核心层，接入层设备一般不提供支持。</p>
+<p>与“虚拟机框”这类控制平面虚拟化不同，隧道技术属于数据平面的虚拟化。隧道技术过对二层帧进行再封装 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-11-da-er-ceng-ji-zhu-xiao-jie.html">read more</a></div>
+    </div>	
+				
 
  
         
@@ -109,51 +161,6 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>TRILL的封装在本质上是一种路由封装，它的寻址发生在网络层，因此不妨将TRILL比对着IP路由来看。TRILL设备被称作RB（Routing Bridge），可类比IP路由器。报头中，DA/SA为Egress/Ingress ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-102-nvo3.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-101-nvo3.html"><h2>原创博客——网络虚拟化的前世、今生与未来（10.1-NVo3）</h2></a>
-        <div class= "well small"> 五 16 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>NVo3之——端到端隧道</h1>
-<p>NVo3（Network Virtualization over Layer 3），是IETF 2014年十月份提出的数据中心虚拟化技术框架。NVo3基于IP/MPLS作为传输网，在其上通过隧道连接的方式，构建大规模的二层租户网络。NVo3的技术模型如下所示，PE设备称为NVE（Network Virtualization Element），VN Context作为Tag标识租户网络，P设备即为普通的IP/MPLS路由器。NVo3在设计之初，VxLAN与SDN的联合部署已经成为了数据中心的大趋势，因此NVo3的模型中专门画出了NVA（Network Virtualization Authority）作为NVE设备的控制器负责隧道建立、地址学习等控制逻辑。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/nvo3%20endend%20model.png" /></p>
-<p>NVo3的思想起源于VxLAN，结合NVGRE和STT的发展，目前收敛为Geneve。上述技术都是端到端的隧道，CE为虚拟机或物理服务器，其实单纯地从NVo3的模型角度来看，后面要介绍的OTV/EVN/EVI这些DC间互联的隧道技术都属于NVo3的框架中。本专题将对端到端的NVo3技术进行深入的介绍。</p>
-<h2>1) VxLAN</h2>
-<p>VxLAN（Virtual eXtensible LAN，RFC 7348），是Vmware和Cisco联合提出的一种大二层技术 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-101-nvo3.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(9-隧道技术引言)</h2></a>
-        <div class= "well small"> 六 10 十月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>从铁三角到隧道</h1>
-<p>开始讲解数据平面的虚拟化前，我们首先来看一看数据中心网络典型的网络拓扑。左图3层分别为接入、汇聚和核心层，一般来说，接入层负责制定虚拟机的接入策略，汇聚层负责二层的传输，核心层作为网关负责三层的互通。当然了，如果汇聚层设备能够作为网关，也可以简化为右图的两层拓扑。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/%E4%BB%8E%E9%93%81%E4%B8%89%E8%A7%92%E5%88%B0%E9%9A%A7%E9%81%93%20%E4%B8%A4%E4%B8%AA%E7%BB%93%E6%9E%84.png" /></p>
-<p>数据中心传统的虚拟化做法是VLAN+xSTP +自学习，VLAN负责隔离，STP负责拓扑整合，自学习负责转发，三者贯穿于传统数据中心的二层网络。不过三者各有各的问题：VLAN虽然简单成熟，但作为虚网的标签可用的只有4094个；自学习要依靠泛洪这种极度浪费资源的行为来在二层探路，而且汇聚/核心层设备MAC地址表压力太大；xSTP更是老大难的问题——收敛慢、规模受限、链路利用率低、配置复杂等等，还要考虑如何与其他二层协议配合设计。虽然有诸多的问题，但传统数据中心毕竟规模有限，倒也对付的过去。</p>
-<p>2006年，亚马逊推出了AWS，开启了公有云的时代，大二层网络的呼声越来越高。面对着越来越多的用户，面对着越来越大的流量压力和被迫闲置的链路带宽，数据中心网络的转型迫在眉睫。虽然结合之前讲过的控制平面虚拟化技术，能够在一定程度上弱化上述问题，不过对于大二层的设计目标来说，底层网络仍然是不够智能、不够灵活的。于是多种多样的隧道技术出现了，逐渐代替了 “VLAN+xSTP ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-9-sui-dao-ji-zhu-yin-yan.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
@@ -162,6 +169,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
     <li class=""><a href="/author/chen-zhang2.html">2</a></li>
     <li class=""><a href="/author/chen-zhang3.html">3</a></li>
     <li class=""><a href="/author/chen-zhang4.html">4</a></li>
+    <li class=""><a href="/author/chen-zhang5.html">5</a></li>
 
     <li class="next"><a href="/author/chen-zhang2.html">Next &rarr;</a></li>
 
@@ -233,7 +241,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2016</p>
 </footer>
 
 </div> <!-- /container -->

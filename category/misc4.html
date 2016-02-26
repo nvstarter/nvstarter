@@ -58,6 +58,51 @@
  
 
     <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html"><h2>原创博客——网络虚拟化的前世、今生与未来(5.4-VPN)</h2></a>
+        <div class= "well small"> 五 02 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>其它VPN分类</h1>
+<p>除了根据应用形式来对VPN技术进行分类，还有很多其它的分类方式，下面列出其中常见的几种分类，以便读者对VPN技术有更多维度的认识。</p>
+<p>用Markdown编辑表格实在是费劲，直接截图了～</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/VPN%20%E5%88%86%E7%B1%BB.png" /></p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-54-vpn.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html"><h2>原创博客——网络虚拟化的前世、今生与未来(4-VLAN)</h2></a>
+        <div class= "well small"> 四 01 十月 2015
+
+by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
+ 
+
+
+ </div>
+        <div class="summary"><h1>VLAN</h1>
+<p>首先，我们来看看传统网络里的网络虚拟化，这一个小专题来讲一讲VLAN。</p>
+<p>VLAN（Virtual LAN，虚拟局域网），是一个局域网的虚拟化技术，官方文件参考IEEE 802.1q。对于做网络的人来说，谈起它简直是如数家珍。VLAN可以说是网络虚拟化领域的老祖宗，可别看这个技术年头已经很久了，它的活力可不减当年——做VPN有QinQ，做策略有PVLAN，做融合有FCOE，做VPC有AWS的EC2等等，可以说由VLAN衍生出来的标签技术的应用在数通领域历久弥新，而基本上所有的以太网技术在设计或优化的时候都无法忽略VLAN的存在。这里纠正一个初学VLAN常见的概念性错误——虽然以太网在市场上已经成为了局域网的代名词，但是局域网不能和以太网划等号，VLAN是一种局域网技术，不是单纯为以太网设计的。</p>
+<p>按照惯例，先来看看802.1q中VLAN的帧格式吧，虽然都是老生常谈了。</p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vlan.jpg" /></p>
+<p>TYPE=0x8100，PRI是优先级字段，CFI不怎么常用，以太网中CFI=0。后面12位的VID就是VLAN的标签位，也就是说802.1q中一个局域网中最多有4096个VLAN，不过不同的交换机对VLAN的规划是不同的，用户实际在一台交换机上能用的VLAN数目要比4096少很多。很简单的一个字段吧，没有什么分域，更不能用来寻址，就只是一个标签，不过这对于传统局域网里的网络虚拟化来说就足够了。</p>
+<p>传统局域网中，虚拟化的需求就是不同组织间的隔离 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-4-vlan.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-3-shu-tong-wang-luo-xu-ni-hua.html"><h2>原创博客——网络虚拟化的前世、今生与未来(3-数通网络虚拟化)</h2></a>
         <div class= "well small"> 二 29 九月 2015
 
@@ -153,7 +198,7 @@ Routed Protocol和Routing Protocol两个词很好的对技术组成部分进行�
     </div>     </div> 
 <footer>
 <br />
-<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2015</p>
+<p><a href="">Start For Network Virtualization</a> &copy; Chen Zhang 2016</p>
 </footer>
 
 </div> <!-- /container -->

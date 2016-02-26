@@ -96,81 +96,13 @@ FLOGI/PLOGI。与FC中相应过程一样，FCF作为Login Server为ENode分配FC
         <hr />
     </div>
 		
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-12-xu-ni-ji-jie-ru.html"><h2>原创博客——网络虚拟化的前世、今生与未来（12-虚拟机接入）</h2></a>
-        <div class= "well small"> 四 25 二月 2016
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><p>云计算（严格说是IaaS）的核心诉求就是向用户提供虚拟机。为了尽可能地提高CPU、内存的利用率，一台物理服务器中往往支撑着数十台甚至上百台虚拟机。接入是虚拟机联网的第一跳，接入做不好，什么大二层这些说法都是白扯。于是，虚拟机的接入成为了云网络变革中的头等大事。</p>
-<h2>1) VEB</h2>
-<p>传统接入网络中，一台主机通过一块物理网卡加上一条网线连接到接入交换机的一个物理端口上（不考虑网卡绑定）。可是面对庞大的虚拟机军团，传统的接入网络可傻了眼。物理服务器上的那几块网卡可哪够这些虚拟机分啊，另外网络的布线，交换机的端口密度也都难以满足大规模的虚拟机接入。</p>
-<p>硬件的资源矛盾难以调和，那么解决这一问题自然而然的思路就是将接入网络的位置下移，延伸到物理服务器中。这种思路自虚拟化诞生的那一天起就有了，做法就是在HyperVisor中加一个软交换模块VEB（Virtual Ethernet Bridge），通过虚拟端口关联虚拟机，用于虚拟机的接入和本地交换，通过一块物理网卡上联物理交换机（不考虑网卡绑定），如果通信目标不在本地就交给上游的物理交换机。上游的交换机也全然意识不到它是个软件交换机，一切都跟传统以太网没什么两样。</p>
-<p>VEB在技术上没什么难点，商用如Vmware的VDS和Cisco的Nexus 1000V，开源如Linux Bridge和Open vSwitch，产品已经十分成熟。如果单纯从功能实现的角度来看，软件交换机的功能可以比物理交换机更为强大，升级起来也灵活的多，比如VxLAN这种延伸到服务器中的端到端隧道就能够很好地与VEB配合着做接入。可是由于软件交换机毕竟是通过CPU和通用内存来做交换的逻辑，其性能自然与基于ASIC的物理交换机有着巨大的差距。当然 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-12-xu-ni-ji-jie-ru.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-11-da-er-ceng-ji-zhu-xiao-jie.html"><h2>原创博客——网络虚拟化的前世、今生与未来（11-大二层技术小结）</h2></a>
-        <div class= "well small"> 二 17 十一月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><h1>大二层技术小结</h1>
-<p>前面几个小的专题讲了讲大二层的常见技术。可以说，大二层在最近几年引领了一波又一波的网络技术革新，从“VLAN+自学习+xSTP”的铁三角到“虚拟机框”技术再到各式各样的隧道技术，技术发展之快令人咋舌，技术种类之多令人眼花缭乱。对于DC网络的管理者来说，如何进行大二层技术的选型想必是一件非常头疼的事情。在对大二层的技术做过详细的介绍后，本专题将作为一个小结，作者将从实际部署的角度谈一谈大二层的组网，哪里有理解不到的地方敬请指正。</p>
-<p>传统的二层中xSTP扮演着无可替代的作用，不过它对二层的规模和效率有着相当多的限制。为了摆脱这种限制，“虚拟机框”技术通过将多台物理设备整合为一台逻辑设备，跨物理设备冗余的上行链路被看做一个端口组，在转发上统一对待，不仅形成了逻辑上一个天然无环的拓扑，还可以在端口组上做负载分担，基本上解决了STP的困扰。这类技术很早就也得到了广泛的应用，是“大二层”技术中最为成熟的。“虚拟机框”技术有着诸多的优点，但是主要存在着以下两个问题：物理设备间的同步流量远距离或者是跨DC传输很受限制，整合的数量有限，框式一般为2台或者4台；都是私有技术，容易形成厂商锁定。考虑到成本问题，实际部署中这类技术往往用于汇聚/核心层，接入层设备一般不提供支持。</p>
-<p>与“虚拟机框”这类控制平面虚拟化不同，隧道技术属于数据平面的虚拟化。隧道技术过对二层帧进行再封装 ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-11-da-er-ceng-ji-zhu-xiao-jie.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-102-nvo3.html"><h2>原创博客——网络虚拟化的前世、今生与未来（10.2-NVo3）</h2></a>
-        <div class= "well small"> 三 04 十一月 2015
-
-by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
- 
-
-
- </div>
-        <div class="summary"><p>NVo3是L2 over IP/MPLS，利用IP网络的智能传输作为大二层虚拟交换机的背板走线，其好处是利用现有的设备即可完成隧道的传输。不过同时这也带来了一定的问题——IP网络的传输路径、服务质量难以控制，而且往往需要IP网络支持组播。尽管MPLS能解决这一问题，但是其部署过于复杂，开通一个租户的实例动辄要上月的时间，已经难以跟上公有云业务的发展。从NVo3工作组形成Geneve的思路来看，是希望IP Router能够感知到隧道承载的内部L2业务的需求以便提供匹配的传输管道，不过要改造现网的设备可绝非一件容易的事情。这几年以TRILL和SPB为代表的Switch Fabric技术则另起炉灶，走了一条非IP传输的路线，同样满足了大二层所需要的传输智能和可扩展性。</p>
-<h2>1) TRILL</h2>
-<p>TRILL（Transparent Interconnection of Lots of Links，RFC 6325），是一种把三层的链路状态路由技术应用于二层流量传输的协议。TRILL为二层网络添加了基于IS-IS路由协议的控制平面，这种基于路由的寻址方式使得二层网络的转发变得更加智能，同时也使得二层网络摆脱了STP的束缚，获得了高效性和可扩展性。下面来看TRILL的报文格式。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/trill%E6%8A%A5%E6%96%87.png" /></p>
-<p>TRILL的封装在本质上是一种路由封装，它的寻址发生在网络层，因此不妨将TRILL比对着IP路由来看。TRILL设备被称作RB（Routing Bridge），可类比IP路由器。报头中，DA/SA为Egress/Ingress ...</p> <a class="btn btn-info xsmall" href="/yuan-chuang-bo-ke-wang-luo-xu-ni-hua-de-qian-shi-jin-sheng-yu-wei-lai-102-nvo3.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
-    <li class="active"><a href="/category/misc.html">1</a></li>
-    <li class=""><a href="/category/misc2.html">2</a></li>
-    <li class=""><a href="/category/misc3.html">3</a></li>
-    <li class=""><a href="/category/misc4.html">4</a></li>
+    <li class="active"><a href="/tag/wang-luo-xu-ni-hua-fcoeiboe.html">1</a></li>
 
-    <li class="next"><a href="/category/misc2.html">Next &rarr;</a></li>
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
 
 </ul>
 </div>
