@@ -77,9 +77,9 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/fc%20frame.png" /></p>
 <p>FCoE网络中，服务器通过一块CNA网卡同时支撑IP和FC-3两套协议，相当于HBA和Ethernet NIC的合体。FCoE的以太网类型是0x8906，其外层MAC地址的写法比较讲究，后续通过具体的通信流程进行介绍。外层的VLAN对于FCoE来说同样非常关键，其原因主要有二：首先，FCoE流量必须在无损无丢包的以太网链路上进行传输，这完全依赖于PFC和ETS机制，而这两种机制都需要根据VLAN标签来对流量进行分类，因此FCoE流量必须承载在特定的VLAN中；其次，FCF要实现存储网络内部的虚拟化，需要使用不同的VLAN来承载不同VSAN（Virtual Storage Area Network）的流量。那么外层以太网封装时具体该使用哪个VLAN呢？这就要看FCoE的控制平面了。</p>
 <p>FCoE使用FIP（FCoE Initialization Protocol）作为控制平面协议，其以太网类型为0x8914。FIP主要负责以下三个工作：
- - VLAN发现。FIP在Native VLAN中通过VLAN发现报文与邻居协商后续FIP信令和FCoE流量所使用的VLAN，其缺省值为1002。
- - FCF发现。FCF在所有FCoE VLAN内定期组播发现通告报文，使得当前VLAN内的所有的ENode发现自己。
- - FLOGI/PLOGI。与FC中相应过程一样，FCF作为Login Server为ENode分配FCID，同时作为Name Server记录ENode的登录信息。</p>
+- VLAN发现。FIP在Native VLAN中通过VLAN发现报文与邻居协商后续FIP信令和FCoE流量所使用的VLAN，其缺省值为1002。
+- FCF发现。FCF在所有FCoE VLAN内定期组播发现通告报文，使得当前VLAN内的所有的ENode发现自己。
+- FLOGI/PLOGI。与FC中相应过程一样，FCF作为Login Server为ENode分配FCID，同时作为Name Server记录ENode的登录信息。</p>
 <p>经过上述三个阶段后，FCoE网络的初始化工作就完成了，FCoE流量得以无损地在以太网中传输。下面来看一个多跳FCoE网络中典型的报文转发流程。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/fc%20forward.png" /></p>
 <p>由于FCF本质上是一台路由设备，因此FCoE报文经过FCF转发时FCID不变，而外层的MAC地址会逐跳地改写。我们知道IP和MAC是通过ARP协议联系在一起的，那么FCID和MAC该如何映射呢？FCoE为ENode规定了如下的映射方法：使用FC-MAP填充MAC地址的高24位，低24位填充为FCID，得到FPMA作为自己的以太网地址，而弃用CAN网卡出厂时的MAC地址。其中FC-MAP为FIP的FCF发现阶段中，FCF告诉ENode的信息，每个VSAN内部的ENode都使用相同的FC-MAP，不同的VSAN使用不同的FC-MAP。而对于FCF来说，不进行这种转换，直接使用本机MAC地址FCF-MAC进行外层以太网封装。同一个VSAN内的报文都在同一个VLAN内传输，FCF进行per VLAN的MAC地址学习，保证了VSAN间的隔离，不同VLAN的优先级不同，通过PFC和ETS进行差异化的传输控制。</p>
