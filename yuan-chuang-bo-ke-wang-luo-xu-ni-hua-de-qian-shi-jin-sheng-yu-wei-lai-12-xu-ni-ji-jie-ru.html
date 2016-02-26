@@ -71,7 +71,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <p>另外一种思路是VEB只保留接入端口和一些简化的转发功能，复杂的接入策略则转移给上游物理交换机。除了能够提升性能，这种思路还有另外一个非技术方面的驱动因素——网络复杂的功能分离到了服务器外面，使得服务器团队和网络团队的管理边界变得十分明确，避免了很多不必要的麻烦事儿。其代表技术为Cisco阵营的VN-TAG和非Cisco阵营的VEPA。</p>
 <h2>2) VN-TAG</h2>
 <p>VN-TAG是Cisco的私有标准，利用一个全新的标签实现了完整的数据中心接入方案，主要包括VN-Link技术和FEX技术。VN-Link部署在服务器的交换组件上，负责虚拟机的接入，而FEX部署在接入层的物理交换机上，负责虚拟机间的互通。两者配合在一起实现了虚拟机的实时感知和分布式的接入，接入配置和策略的集中式分发保证了虚拟机的无缝迁移。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vepa.png" /></p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vntag%20frame.png" /></p>
 <p>老规矩，帧格式先行。VN-TAG将6个字节的新字段插入到VLAN的前面，这些字节只在VN-TAG设备中出现，现有的协议（包括VLAN的使用）不会受到任何的影响。其中，DVIF_ID/SVIF_ID是目的/源虚拟机被分配的唯一标识，各有12位，通过Port Profile的配置与虚拟机接入端口进行一对一的通道绑定，VN-TAG物理交换机根将据这个标识来识别虚拟机，实现网络接口虚拟化。其他的标志位用于FEX系统中，D位标识报文的走向，P位标识报文是否需要复制，L位标识源主机和目的主机是否连接在同一台物理交换机上，R位作为保留。</p>
 <p>通信流程概括如下：服务器中的交换组件不进行MAC寻址，它接受源虚拟机的流量，封装好VN-TAG（标记SVI_ID），然后直接交给上游的物理交换机，上游的交换机完成SVI_ID对源MAC地址，VLAN和入端口的学习，根据目的MAC地址标记DVI_ID，然后转发给目标服务器，目标服务器根据DVI_ID进行通道转发，剥掉VN-TAG后转发给目标虚拟机。借用《腾云——云计算和大数据时代网络技术揭秘》中的一张图来表达上述过程，同时对该书作者表示感谢。</p>
 <p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vntag%20forward.png" /></p>
@@ -81,7 +81,7 @@ by <a class="url fn" href="/author/chen-zhang.html">Chen Zhang</a>
 <h2>3) VEPA</h2>
 <p>VEPA（Virtual Ethernet Port Aggregator，802.1Qbg）是HP提出的虚拟机接入方案，设计目标就是尽量避免服务器上的大幅度修动。前面提到，无论是VN-TAG还是VEPA，都是为了解决VEB消耗大量服务器资源的问题。HP没办法搞定芯片来支持新字段，那么做不了加法就只好在原有的基础上动脑筋。VEPA对以太网帧格式没有任何的修改，而是通过对以太网转发规则的巧妙修改，同样卸载了服务器的负担。</p>
 <p>802.1Qbg中，服务器中的VEPA组件间与虚拟机间运行VDP（Virtual Station Interface Discovery Protocol）协议，以识别虚拟机接入位置，同时支持对虚拟机迁移的感知。标准VEPA中，服务器的VEPA组件在虚拟机端口接收到的流量，不做任何处理，一律扔给上游的VEPA物理交换机。上游交换机正常做自学习，其改动之处在于VEPA修改了STP以允许入端口泛洪/转发，如果发现目的MAC地址在同一台服务器中，就再交给该服务器的VEPA组件，VEPA组件对于从上游交换机收到的流量进行MAC寻址转发，完成虚拟机间的通信。这个过程如下图所示，本地流量被强行绕弯通过上游交换机，俗称harpin，十分粗暴却简单有效。</p>
-<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vntag%20frame.png" /></p>
+<p><img alt="enter description here" src="http://7xnjmd.com1.z0.glb.clouddn.com/vepa.png" /></p>
 <p>VEPA的优势在于不需要对芯片做改动，交换机和服务器网卡的软件和驱动升级后就能支持VEPA了。但是，简单也往往意味着功能较弱。由于不带任何新的标签，所有流量都混在一起，上游VEPA交换机上的控制策略就很难做了。</p>
 <p>在数通网络里，想要标识流量，肯定是要使用特定的字段来做的。HP没法另起炉灶，只能用已有的协议字段。VLAN是不行的，因为往往要用它来区分业务，于是HP看中了QinQ（802.1ad），在标准VEPA的基础上使用QinQ的S-TAG来标识虚拟机流量，形成了增强型VEPA（802.1Qbg Multi- Channel）。有人可能要问了，虚拟机MAC地址不是唯一的吗，用来做策略不行吗？行，但是很麻烦，而且做不了分组策略。</p>
 <p>在Multi- Channel中，一些S-TAG的流量可以在本地直接进行转发，而不用hairpin。另外对于广播/组播流量的处理，VEPA也做了一定的完善，允许在合理的位置进行复制，而VN-TAG只允许在N2K上进行复制。这两点也算是一个对标准VEPA的一个完善吧。</p>
